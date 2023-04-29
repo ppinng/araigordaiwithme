@@ -32,16 +32,16 @@ dependencies:
     sdk: flutter
 
   #Google Sign in
-  firebase_core: ^1.24.0
-  firebase_auth: ^3.11.2
-  google_sign_in: ^5.2.1
+  firebase_core: ^2.10.0
+  firebase_auth: ^4.4.2
+  google_sign_in: ^6.1.0
 
   #State Management
   provider: ^6.0.5
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  cloud_firestore: ^3.5.1
+  cloud_firestore: ^4.5.3
   firebase_ui_auth: ^1.0.0-dev.0
   google_fonts: ^4.0.4
   go_router: ^7.0.0
@@ -76,6 +76,7 @@ flutter:
     - images/kaowmungai.png
     - images/gaiyang.png
     - images/krapao.png
+    - images/AppLogo.png
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
