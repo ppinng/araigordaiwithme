@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:araigordaiwithme/screens/welcome_page/welcome_screen.dart';
 
-void main(){
+void main() {
   runApp(const App());
 }
 
@@ -21,5 +21,3 @@ class App extends StatelessWidget {
     );
   }
 }
-
-
