@@ -1,6 +1,7 @@
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:araigordaiwithme/constant.dart';
+import 'package:google_fonts/google_fonts.dart';
 //import screens
 import 'package:araigordaiwithme/screens/register_page/register_page.dart';
 import 'package:araigordaiwithme/screens/login_page/login_page.dart';
@@ -16,16 +17,34 @@ class WelcomeScreen extends StatelessWidget {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-                width: size.width,
-                height: 200,
-                child: Image.asset("images/AppLogo.png")),
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+              child: SizedBox(
+                  width: size.width,
+                  height: 200,
+                  child: Image.asset("images/AppLogo.png")),
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 15),
+              child: Text('Arai Gor Dai.',
+                  style: TextStyle(
+                      color: kAppColor,
+                      fontSize: 40.0,
+                      fontWeight: FontWeight.bold)),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 SizedBox(
                   width: 180,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: kButtonColor,
+                        shadowColor: Colors.black,
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10))),
                     child: const Text(
                       'Sign Up',
                       style: TextStyle(fontSize: 20),
@@ -39,6 +58,13 @@ class WelcomeScreen extends StatelessWidget {
                 SizedBox(
                   width: 180,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: kButtonColor,
+                        shadowColor: Colors.black,
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10))),
                     child: const Text(
                       'Sign In',
                       style: TextStyle(fontSize: 20),
