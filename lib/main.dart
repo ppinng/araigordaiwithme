@@ -4,8 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'package:araigordaiwithme/screens/welcome_page/welcome_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-void main(){
+void main() {
   runApp(const App());
 }
 
@@ -15,11 +16,10 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(),
+      theme: ThemeData(fontFamily: 'Montserrat'),
       home: const WelcomeScreen(),
     );
   }
 }
-
-
