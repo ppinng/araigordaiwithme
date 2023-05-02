@@ -1,3 +1,4 @@
+import 'package:araigordaiwithme/screens/Home_page/home_page.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:flutter/material.dart';
@@ -173,7 +174,7 @@ class SignupScreen extends HookWidget {
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) =>
-                                  const SignupScreen())); // need to change to more info page
+                                  const HomePage())); // need to change to more info page
                         },
                       ),
                     ),
