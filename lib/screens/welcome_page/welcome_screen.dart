@@ -1,7 +1,7 @@
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:araigordaiwithme/constant.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 //import screens
 import 'package:araigordaiwithme/screens/register_page/register_page.dart';
 import 'package:araigordaiwithme/screens/login_page/login_page.dart';
