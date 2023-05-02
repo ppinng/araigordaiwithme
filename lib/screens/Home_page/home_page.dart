@@ -1,3 +1,4 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentTab = 0;
-  final pages = [FoodList(), History(), Favorite()];
+  final pages = [const FoodList(), const History(), const Favorite()];
 
   @override
   Widget build(BuildContext context) {
@@ -26,18 +27,18 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: kButtonColor,
         items: [
           SalomonBottomBarItem(
-            icon: Icon(Icons.food_bank_outlined),
-            title: Text("Home"),
+            icon: const Icon(Icons.food_bank_outlined),
+            title: const Text("Home"),
             selectedColor: Colors.white,
           ),
           SalomonBottomBarItem(
-            icon: Icon(Icons.history),
-            title: Text("History"),
+            icon: const Icon(Icons.history),
+            title: const Text("History"),
             selectedColor: Colors.white,
           ),
           SalomonBottomBarItem(
-            icon: Icon(Icons.favorite_border_outlined),
-            title: Text("Favorite"),
+            icon: const Icon(Icons.favorite_border_outlined),
+            title: const Text("Favorite"),
             selectedColor: Colors.white,
           ),
         ],

@@ -9,12 +9,13 @@ import 'package:araigordaiwithme/constant.dart';
 import 'package:araigordaiwithme/screens/register_page/register_page.dart';
 import 'package:araigordaiwithme/screens/welcome_page/welcome_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
+// import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../Home_page/home_page.dart';
 import '../forgotpassword_page/forgot_page.dart';
 
 class LoginScreen extends HookWidget {
@@ -22,7 +23,7 @@ class LoginScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
+    final _formKey = GlobalKey<FormState>();
 
     final _emailController = useTextEditingController();
     final _passwordController = useTextEditingController();
@@ -76,67 +77,70 @@ class LoginScreen extends HookWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
-                    child: TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: kBoxColor,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide.none),
-                        hintText: 'E-mail',
-                        prefixIcon: const Padding(
-                          padding: EdgeInsets.only(
-                              left: 20.0, right: 12.0, bottom: 3),
+                    child: Form(
+                      child: TextFormField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: kBoxColor,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: BorderSide.none),
+                          hintText: 'E-mail',
+                          prefixIcon: const Padding(
+                            padding: EdgeInsets.only(
+                                left: 20.0, right: 12.0, bottom: 3),
+                          ),
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 16.0),
                         ),
-                        contentPadding:
-                            const EdgeInsets.symmetric(vertical: 16.0),
-                      ),
-                      onChanged: (value) => email.value = value,
-                      // validator: (value) {
-                      //   if (value == null || value.isEmpty) {
-                      //     return 'Please enter some text';
-                      //   }
-                      //   bool emailValid = RegExp(
-                      //           r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                      //       .hasMatch(value);
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          bool emailValid = RegExp(
+                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                              .hasMatch(value);
 
-                      //   if (!emailValid) {
-                      //     return 'Please enter a valid email';
-                      //   }
-                      //   return null;
-                      // },
+                          if (!emailValid) {
+                            return 'Please enter a valid email';
+                          }
+                          return null;
+                        },
+                      ),
                     ),
                   ),
 
                   Padding(
                     padding: const EdgeInsets.fromLTRB(32, 18, 32, 0),
-                    child: TextFormField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: kBoxColor,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                            borderSide: BorderSide.none),
-                        hintText: 'Password',
-                        prefixIcon: const Padding(
-                          padding: EdgeInsets.only(
-                              left: 20.0, right: 12.0, bottom: 3),
+                    child: Form(
+                      child: TextFormField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: kBoxColor,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: BorderSide.none),
+                          hintText: 'Password',
+                          prefixIcon: const Padding(
+                            padding: EdgeInsets.only(
+                                left: 20.0, right: 12.0, bottom: 3),
+                          ),
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 16.0),
                         ),
-                        contentPadding:
-                            const EdgeInsets.symmetric(vertical: 16.0),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          if (value.length < 6) {
+                            return "Password must be at least 6 characters";
+                          }
+                          return null;
+                        },
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        if (value.length < 6) {
-                          return "Password must be at least 6 characters";
-                        }
-                        return null;
-                      },
                     ),
                   ),
                   TextButton(
@@ -163,18 +167,6 @@ class LoginScreen extends HookWidget {
                       ),
                     ),
                   ),
-                  // RichText(
-                  //     text: const TextSpan(
-                  //         text: 'Forgot Password?',
-                  //         style: TextStyle(
-                  //           decoration: TextDecoration.underline,
-                  //           decorationThickness: 2,
-                  //           color: kButtonColor,
-                  //           fontSize: 14,
-
-                  //         )),
-
-                  //         ),
                   Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -194,40 +186,76 @@ class LoginScreen extends HookWidget {
                               style: TextStyle(fontSize: 20),
                             ),
                             onPressed: () {
+                              //if (_formKey.currentState!.validate()) {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const WelcomeScreen()));
+                                  builder: (context) => const HomePage()));
+                              //}
                             },
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 9),
-                          child: RichText(
-                            text: TextSpan(
-                              children: <TextSpan>[
-                                const TextSpan(
-                                    text: "Don't have an account? ",
-                                    style: TextStyle(
-                                        fontSize: 15, color: Colors.black)),
-                                TextSpan(
-                                    text: 'Create one',
-                                    style: const TextStyle(
-                                        fontSize: 16, color: kButtonColor),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const SignupScreen()));
-                                      })
-                              ],
+                        // Padding(
+                        //   padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                        //   child: RichText(
+                        //     text: TextSpan(
+                        //       children: <TextSpan>[
+                        //         const TextSpan(
+                        //             text: "Don't have an account? ",
+                        //             style: TextStyle(
+                        //                 fontSize: 15, color: Colors.black)),
+                        //         TextSpan(
+                        //             text: 'Create one',
+                        //             style: const TextStyle(
+                        //                 fontSize: 16, color: kButtonColor),
+                        //             recognizer: TapGestureRecognizer()
+                        //               ..onTap = () {
+                        //                 Navigator.of(context).push(
+                        //                     MaterialPageRoute(
+                        //                         builder: (context) =>
+                        //                             const SignupScreen()));
+                        //               })
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text("Don't have an account?"),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SignupScreen()));
+                              },
+                              style: ButtonStyle(
+                                overlayColor:
+                                    MaterialStateProperty.resolveWith<Color>(
+                                  (Set<MaterialState> states) {
+                                    return kBackgroundColor;
+                                  },
+                                ),
+                                splashFactory: NoSplash.splashFactory,
+                              ),
+                              child: const Text(
+                                'Create one',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: kButtonColor,
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                        const Text('OR',
-                            style:
-                                TextStyle(fontSize: 15, color: Colors.black)),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                          child: Text('OR',
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.black)),
+                        ),
                         SizedBox(
-                          width: 250,
+                          width: 255,
                           child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: kButtonColor,
@@ -244,7 +272,7 @@ class LoginScreen extends HookWidget {
                                       child: Image.asset(
                                           "images/google_logo.png")),
                                   const Text(
-                                    'Login with Google',
+                                    'Sign in with Google',
                                     style: TextStyle(fontSize: 18),
                                   ),
                                 ],
