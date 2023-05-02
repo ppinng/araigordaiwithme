@@ -4,6 +4,7 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class forgotMain extends StatelessWidget {
   const forgotMain({super.key});
@@ -11,6 +12,23 @@ class forgotMain extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: kBackgroundColor,
+        elevation: 0,
+        leading: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+          child: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const FaIcon(
+              FontAwesomeIcons.arrowLeft,
+              color: Colors.black,
+              size: 26,
+            ),
+          ),
+        ),
+      ),
       backgroundColor: kBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(0),
@@ -94,30 +112,8 @@ class _forgotEmailState extends State<forgotEmail> {
             ),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                child: SizedBox(
-                  width: 160,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: kButtonColor,
-                        shadowColor: Colors.black,
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10))),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      "Back",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ),
-                ),
-              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                 child: SizedBox(
@@ -165,6 +161,23 @@ class forgotMain2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: kBackgroundColor,
+        elevation: 0,
+        leading: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+          child: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const FaIcon(
+              FontAwesomeIcons.arrowLeft,
+              color: Colors.black,
+              size: 26,
+            ),
+          ),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(0),
         child: Column(
