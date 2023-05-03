@@ -65,6 +65,7 @@ class FoodList extends StatelessWidget {
 
   // FoodList({super.key});
   bool isFavorite = false;
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -305,6 +306,11 @@ class _FavoriteButtonState extends State<FavoriteButton> {
                 setState(() {
                   isFavorite = !isFavorite;
                 });
+                if(isFavorite == true){
+                  print('Add to Favorite');
+                }else{
+                  print('Remove from Favorite');
+                }
               },
             ),
           ),
