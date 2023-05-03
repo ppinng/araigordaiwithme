@@ -31,8 +31,6 @@ class FoodList extends StatelessWidget {
   //   });
   // }
 
-  Color _favIconColor = Colors.grey;
-
   final List<Menu> menus = [
     Menu(
         name: 'Spicy fried chicken with basil leaves',

@@ -8,7 +8,7 @@ class RandomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-       padding: const EdgeInsets.only(left: 25, top: 20),
+      padding: const EdgeInsets.only(left: 25, top: 20),
       child: Align(
         alignment: Alignment.centerRight,
         child: Padding(
@@ -22,12 +22,9 @@ class RandomButton extends StatelessWidget {
                   fontSize: 22,
                 ),
               ),
-                    
-                
-                  
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0,0,0,0),
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: SizedBox(
@@ -49,48 +46,68 @@ class RandomButton extends StatelessWidget {
                         ),
                         onPressed: () => showDialog(
                           context: context,
-                          builder: (BuildContext context) => AlertDialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(
-                                  width: 200,
-                                  height: 100,
-                                  child: Image.asset('images/kaowmungai.png'),
-                                ),
-                                const SizedBox(height: 20),
-                                const Text(
-                                  'Khaowmungai',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: 10),
-                                const Text(
-                                  '360 Kcal/ 1 bowl',
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 25),
-                              ],
-                            ),
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Expanded(
-                                  child: Text(''),
-                                ),
-                                IconButton(
-                                  icon: const FaIcon(
-                                    FontAwesomeIcons.times,
-                                    color: Colors.grey,
-                                    size: 26,
+                          builder: (BuildContext context) {
+                            return Dialog(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              child: Stack(
+                                children: [
+                                   Positioned(
+                                    top: 0,
+                                    right: 0,
+                                    child: Container(
+                                      width: 35,
+                                      height: 35,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[300],
+                                        borderRadius: const BorderRadius.only(
+                                          topRight: Radius.circular(15),
+                                        ),
+                                      ),
+                                      child: IconButton(
+                                        icon: Icon(
+                                          Icons.close,
+                                          size: 20,
+                                          color: Colors.black,
+                                        ),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ),
                                   ),
-                                  onPressed: () => Navigator.of(context).pop(),
-                                ),
-                              ],
-                            ),
-                          ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(60),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const SizedBox(height: 20),
+                                        SizedBox(
+                                          width: 200,
+                                          height: 100,
+                                          child: Image.asset(
+                                              'images/kaowmungai.png'),
+                                        ),
+                                        const SizedBox(height: 20),
+                                        const Text(
+                                          'Khaowmungai',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        const Text(
+                                          '360 Kcal/ 1 bowl',
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                 
+                                ],
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
