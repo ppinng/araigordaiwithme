@@ -20,47 +20,57 @@ class Menu {
 }
 
 class FoodList extends StatelessWidget {
+  // Color _iconColor = Colors.grey;
+
+  // void _handleTap() {
+  //   setState(() {
+  //     _iconColor = Color.fromARGB(255, 243, 33, 33);
+  //   });
+  // }
+
+  Color _favIconColor = Colors.grey;
+
   final List<Menu> menus = [
     Menu(
-        name: 'Menu 1',
+        name: 'Spicy fried chicken with basil leaves',
         image: 'images/krapao.png',
         calories: 250,
         price: 10.99,
         location: 'New York'),
     Menu(
-        name: 'Menu 2',
-        image: 'images/krapao.png',
+        name: 'Spicy Chicken Wings',
+        image: 'images/wingsaps.png',
         calories: 350,
         price: 14.99,
         location: 'Los Angeles'),
     Menu(
-        name: 'Menu 3',
-        image: 'images/krapao.png',
+        name: 'Grilled Chicken',
+        image: 'images/kaiyang.png',
         calories: 450,
         price: 19.99,
         location: 'Chicago'),
     Menu(
-        name: 'Menu 4',
-        image: 'images/krapao.png',
+        name: 'Chicken rice ',
+        image: 'images/kaowmungai.png',
         calories: 550,
         price: 24.99,
         location: 'Houston'),
     Menu(
-        name: 'Menu 5',
-        image: 'images/krapao.png',
+        name: 'Papaya Salad',
+        image: 'images/papayasalad.png',
         calories: 650,
         price: 29.99,
         location: 'Miami'),
   ];
 
-  FoodList({super.key});
-
+  // FoodList({super.key});
+  bool isFavorite = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black, size: 38),
+        iconTheme: const IconThemeData(color: Colors.black, size: 38),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             color: kBackgroundColor,
@@ -70,8 +80,8 @@ class FoodList extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => UserPage()));
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const UserPage()));
             },
             icon: Image.asset("images/forgot.png"),
           ),
@@ -100,7 +110,7 @@ class FoodList extends StatelessWidget {
                         color: kBoxColor,
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 20),
+                        padding: const EdgeInsets.only(left: 20),
                         child: TextButton(
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
@@ -126,7 +136,7 @@ class FoodList extends StatelessWidget {
                       color: kBoxColor,
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 20),
+                      padding: const EdgeInsets.only(left: 20),
                       child: TextButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
@@ -155,50 +165,59 @@ class FoodList extends StatelessWidget {
           return Column(
             children: <Widget>[
               Container(
-                width: 360,
+                width: 348,
                 height: 100,
                 margin: const EdgeInsets.all(10),
-                padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(15),
                 ),
-                child: Row(
-                  children: <Widget>[
-                    // const SizedBox(width: 25),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      child: Image.asset(
-                        menus[index].image,
-                        height: 150,
-                        width: 100,
-                        colorBlendMode: BlendMode.darken,
-                        fit: BoxFit.fitHeight,
-                      ),
-                    ),
-                    // const SizedBox(width: 15),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                child: Stack(
+                  children: [
+                    Row(
+                      //Food image
                       children: <Widget>[
-                        Text(
-                          menus[index].name,
-                          style: const TextStyle(
-                            fontSize: 30,
-                            color: Colors.black,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20, right: 20),
+                          child: Image.asset(
+                            menus[index].image,
+                            height: 75,
+                            width: 100,
+                            colorBlendMode: BlendMode.darken,
+                            fit: BoxFit.cover,
                           ),
                         ),
-                        Text(
-                          'Calories: ${menus[index].calories}',
-                          style: const TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
+                        //Food Name
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                menus[index].name,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              //Food Calories
+                              Text(
+                                'Calories: ${menus[index].calories}',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        // Text('Price: \฿${menus[index].price.toStringAsFixed(2)}'),
-                        // Text('Location: ${menus[index].location}'),
                       ],
                     ),
+                    //Grey Box bottom right
+                    const FavoriteButton(),
                   ],
                 ),
               ),
@@ -208,6 +227,8 @@ class FoodList extends StatelessWidget {
       ),
     );
   }
+
+  // void setState(Null Function() param0) {}
 }
 
 class SearchField extends StatelessWidget {
@@ -233,7 +254,7 @@ class SearchField extends StatelessWidget {
             ),
           ),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(width: 2, color: Colors.grey),
+            borderSide: const BorderSide(width: 2, color: Colors.grey),
             borderRadius: BorderRadius.circular(15),
           ),
         ),
@@ -241,6 +262,54 @@ class SearchField extends StatelessWidget {
           // Perform search functionality here
         },
       ),
+    );
+  }
+}
+
+//favorite heart in grey box
+class FavoriteButton extends StatefulWidget {
+  const FavoriteButton({Key? key}) : super(key: key);
+
+  @override
+  _FavoriteButtonState createState() => _FavoriteButtonState();
+}
+
+class _FavoriteButtonState extends State<FavoriteButton> {
+  bool isFavorite = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned(
+          bottom: 0,
+          right: 0,
+          child: Container(
+            width: 35,
+            height: 35,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: const BorderRadius.only(
+                bottomRight: Radius.circular(15),
+              ),
+            ),
+            child: IconButton(
+              alignment: Alignment.center,
+              icon: Icon(
+                isFavorite ? Icons.favorite : Icons.favorite,
+                size: 20,
+                color: isFavorite ? Colors.red : Colors.white,
+              ),
+              onPressed: () {
+                setState(() {
+                  isFavorite = !isFavorite;
+                });
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

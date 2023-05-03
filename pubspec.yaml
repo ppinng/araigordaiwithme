@@ -84,6 +84,9 @@ flutter:
     - images/forgot.png
     - images/register_logo.png
     - images/user.jpg
+    - images/kaiyang.png
+    - images/wingsaps.png
+    - images/papayasalad.png
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
