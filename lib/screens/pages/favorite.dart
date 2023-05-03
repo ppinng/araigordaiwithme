@@ -49,6 +49,7 @@ class _FavoriteState extends State<Favorite> {
             padding: const EdgeInsets.fromLTRB(30, 55, 0, 0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
                   height: 100,
@@ -61,7 +62,7 @@ class _FavoriteState extends State<Favorite> {
                     children: [
                       const FaIcon(
                         FontAwesomeIcons.user,
-                        size: 44,
+                        size: 36,
                         color: kBoxColor,
                       ),
                       Padding(
@@ -87,7 +88,7 @@ class _FavoriteState extends State<Favorite> {
                   children: [
                     const FaIcon(
                       FontAwesomeIcons.arrowRightFromBracket,
-                      size: 44,
+                      size: 36,
                       color: kBoxColor,
                     ),
                     Padding(
