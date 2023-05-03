@@ -15,7 +15,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentTab = 0;
-  final pages = [const FoodList(), const History(), const Favorite()];
+  final pages = [ FoodList(),   History(),   Favorite()];
 
   @override
   Widget build(BuildContext context) {
