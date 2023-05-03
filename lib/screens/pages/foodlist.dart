@@ -244,3 +244,38 @@ class SearchField extends StatelessWidget {
     );
   }
 }
+
+class SearchField extends StatelessWidget {
+  SearchField({super.key});
+  final _formKey = GlobalKey<FormState>();
+  final _searchController = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 45,
+      child: TextField(
+        controller: _searchController,
+        style: const TextStyle(color: Colors.black),
+        cursorColor: Colors.black,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          prefixIcon: const Padding(
+            padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+            child: FaIcon(
+              FontAwesomeIcons.magnifyingGlass,
+              color: Colors.grey,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(width: 2, color: Colors.grey),
+            borderRadius: BorderRadius.circular(15),
+          ),
+        ),
+        onChanged: (value) {
+          // Perform search functionality here
+        },
+      ),
+    );
+  }
+}

@@ -1,4 +1,5 @@
 import 'package:araigordaiwithme/constant.dart';
+import 'package:araigordaiwithme/screens/pages/userpage.dart';
 import 'package:araigordaiwithme/screens/welcome_page/welcome_screen.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
@@ -128,6 +129,8 @@ class _forgotEmailState extends State<forgotEmail> {
                             borderRadius: BorderRadius.circular(10))),
                     onPressed: () {
                       // if (_formKey.currentState!.validate()) {
+                      //   // showDialog(
+
                       //   // showDialog(
                       //   //     context: context,
                       //   //     builder: (context) {
@@ -308,8 +311,8 @@ class _forgotPasswordState extends State<forgotPassword> {
                   //   //       );
                   //   //     });
                   // }
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const WelcomeScreen()));
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => WelcomeScreen()));
                 },
                 child: const Text(
                   "Next",
@@ -321,5 +324,16 @@ class _forgotPasswordState extends State<forgotPassword> {
         ],
       ),
     );
+  }
+}
+
+String? validateEmail(String? value) {
+  String pattern =
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  RegExp regex = RegExp(pattern);
+  if (!regex.hasMatch(value ?? '')) {
+    return 'Enter Valid Email';
+  } else {
+    return null;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:araigordaiwithme/screens/welcome_page/welcome_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import '../../constant.dart';
 import '../pages/favorite.dart';
 import '../pages/history.dart';
 import '../pages/foodList.dart';
+import '../pages/userpage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
