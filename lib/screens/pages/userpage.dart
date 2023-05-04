@@ -311,8 +311,8 @@ class _UserPageState extends State<UserPage> {
                 );
               },
               child: Container(
-                width: 35,
-                height: 35,
+                width: 30,
+                height: 30,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
@@ -320,7 +320,7 @@ class _UserPageState extends State<UserPage> {
                 ),
                 child: const Icon(
                   Icons.edit_outlined,
-                  size: 20,
+                  size: 23,
                   color: Colors.black,
                 ),
               ),
