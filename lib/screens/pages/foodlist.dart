@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:araigordaiwithme/constant.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../components/Tag_button.dart';
+import '../../components/random.dart';
+
 class Menu {
   final String name;
   final String image;
@@ -27,8 +30,6 @@ class FoodList extends StatelessWidget {
   //     _iconColor = Color.fromARGB(255, 243, 33, 33);
   //   });
   // }
-
-  Color _favIconColor = Colors.grey;
 
   final List<Menu> menus = [
     Menu(
@@ -65,6 +66,7 @@ class FoodList extends StatelessWidget {
 
   // FoodList({super.key});
   bool isFavorite = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,71 +161,84 @@ class FoodList extends StatelessWidget {
         ],
       ),
       backgroundColor: kBackgroundColor,
-      body: ListView.builder(
-        itemCount: menus.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            children: <Widget>[
-              Container(
-                width: 348,
-                height: 100,
-                margin: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: Stack(
-                  children: [
-                    Row(
-                      //Food image
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20, right: 20),
-                          child: Image.asset(
-                            menus[index].image,
-                            height: 75,
-                            width: 100,
-                            colorBlendMode: BlendMode.darken,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        //Food Name
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+      body: Column(
+        //
+        children: [
+          MyButtonLayout(),
+          RandomButton(),
+          const SizedBox(
+            height: 10,
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: menus.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Column(
+                  children: <Widget>[
+                    Container(
+                      width: 348,
+                      height: 100,
+                      margin: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Stack(
+                        children: [
+                          Row(
+                            //Food image
                             children: <Widget>[
-                              Text(
-                                menus[index].name,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 20, right: 20),
+                                child: Image.asset(
+                                  menus[index].image,
+                                  height: 75,
+                                  width: 100,
+                                  colorBlendMode: BlendMode.darken,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                              const SizedBox(
-                                height: 5,
-                              ),
-                              //Food Calories
-                              Text(
-                                'Calories: ${menus[index].calories}',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey,
+                              //Food Name
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      menus[index].name,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    //Food Calories
+                                    Text(
+                                      'Calories: ${menus[index].calories}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                          //Grey Box bottom right
+                          const FavoriteButton(),
+                        ],
+                      ),
                     ),
-                    //Grey Box bottom right
-                    const FavoriteButton(),
                   ],
-                ),
-              ),
-            ],
-          );
-        },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -305,6 +320,11 @@ class _FavoriteButtonState extends State<FavoriteButton> {
                 setState(() {
                   isFavorite = !isFavorite;
                 });
+                if (isFavorite == true) {
+                  print('Add to Favorite');
+                } else {
+                  print('Remove from Favorite');
+                }
               },
             ),
           ),
