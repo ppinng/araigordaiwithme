@@ -25,7 +25,7 @@ class _HistoryState extends State<History> {
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: const [
             Text(
               "History",
               style: TextStyle(color: Colors.black, fontSize: 30),
