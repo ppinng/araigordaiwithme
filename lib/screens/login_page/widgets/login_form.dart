@@ -1,23 +1,20 @@
-import 'package:araigordaiwithme/screens/Home_page/home_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../../constant.dart';
-import '../more_info_page/more_info.dart';
 
-class SignupScreen extends HookWidget {
-  const SignupScreen({super.key});
+import '../../../constant.dart';
+import '../../more_info_page/more_info.dart';
+
+class LoginForm extends HookWidget {
+  LoginForm({super.key});
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final _emailController = useTextEditingController();
+  final _passwordController = useTextEditingController();
+  final _confirmpasswordController = useTextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-    final emailController = useTextEditingController();
-    final passwordController = useTextEditingController();
-    final confirmpasswordController = useTextEditingController();
-
     return Scaffold(
       backgroundColor: kBackgroundColor,
       appBar: AppBar(
@@ -41,16 +38,16 @@ class SignupScreen extends HookWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset("images/register_logo.png"),
-                ),
-              ),
+              // Container(
+              //   margin: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+              //   child: Padding(
+              //     padding: const EdgeInsets.all(8.0),
+              //     child: Image.asset("images/images/AppLogo.png"),
+              //   ),
+              // ),
               const Padding(
                 padding: EdgeInsets.fromLTRB(0, 0, 0, 15),
-                child: Text('Register',
+                child: Text('Arai Gor Dai',
                     style: TextStyle(
                         color: kAppColor,
                         fontSize: 40.0,
@@ -60,14 +57,14 @@ class SignupScreen extends HookWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Form(
-                    key: formKey,
+                    key: _formKey,
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
                           Padding(
                             padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
                             child: TextFormField(
-                              controller: emailController,
+                              controller: _emailController,
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: kBoxColor,
@@ -96,7 +93,7 @@ class SignupScreen extends HookWidget {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(32, 18, 32, 0),
                             child: TextFormField(
-                              controller: passwordController,
+                              controller: _passwordController,
                               obscureText: true,
                               decoration: InputDecoration(
                                 filled: true,
@@ -123,37 +120,6 @@ class SignupScreen extends HookWidget {
                               // },
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(32, 18, 32, 10),
-                            child: TextFormField(
-                              controller: confirmpasswordController,
-                              obscureText: true,
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: kBoxColor,
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    borderSide: BorderSide.none),
-                                hintText: 'Confirm Password',
-                                prefixIcon: const Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 20.0, right: 12.0, bottom: 3),
-                                ),
-                                contentPadding:
-                                    const EdgeInsets.symmetric(vertical: 16.0),
-                              ),
-                              // validator: (value) {
-                              //   if (value == null || value.isEmpty) {
-                              //     return 'Please enter some text';
-                              //   }
-                              //   if (passwordController.text !=
-                              //       confirmpasswordController.text) {
-                              //     return "Password does not match";
-                              //   }
-                              //   return null;
-                              // },
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -171,34 +137,25 @@ class SignupScreen extends HookWidget {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10))),
                         child: const Text(
-                          'Next',
+                          'Sign In',
                           style: TextStyle(fontSize: 20),
                         ),
                         onPressed: () {
-                          if (formKey.currentState!.validate()) {
-                            if (passwordController.text ==
-                                confirmpasswordController.text) {
-                              FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text).then((value) {
-                                print('Create account');
-                                Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => MoreInfo(),
-                                ),
-                              );
-                              });
-
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content:
-                                          Text('Password does not match')));
-                            }
+                          if (_formKey.currentState!.validate()) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const MoreInfo(),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Password does not match')));
                           }
                         },
                       ),
                     ),
                   ),
-                  
                 ],
               ),
             ],

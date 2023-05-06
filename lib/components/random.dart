@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:araigordaiwithme/constant.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class RandomButton extends StatelessWidget {
   const RandomButton({super.key});
@@ -66,7 +65,7 @@ class RandomButton extends StatelessWidget {
                                         ),
                                       ),
                                       child: IconButton(
-                                        icon: Icon(
+                                        icon: const Icon(
                                           Icons.close,
                                           size: 20,
                                           color: Colors.black,

@@ -1,14 +1,11 @@
 import 'package:araigordaiwithme/constant.dart';
-import 'package:araigordaiwithme/screens/pages/userpage.dart';
+
 import 'package:araigordaiwithme/screens/welcome_page/welcome_screen.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class forgotMain extends StatelessWidget {
-  const forgotMain({super.key});
+class ForgotMain extends StatelessWidget {
+  const ForgotMain({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,21 +33,21 @@ class forgotMain extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
+            SizedBox(
               width: 150,
               height: 150,
               child: Image.asset('images/forgot.png'),
             ),
             Container(
               child: const Text(
-                'Jum Mai Dai.',
+                'Reset password',
                 style: TextStyle(
                     color: kAppColor,
                     fontSize: 40.0,
                     fontWeight: FontWeight.bold),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.fromLTRB(32, 18, 32, 0),
               child: forgotEmail(),
             )
@@ -89,7 +86,7 @@ class _forgotEmailState extends State<forgotEmail> {
             child: Container(
               decoration: BoxDecoration(
                   color: kTextFieldColor,
-                  borderRadius: new BorderRadius.circular(50.0)),
+                  borderRadius: BorderRadius.circular(50.0)),
               child: Padding(
                 padding: const EdgeInsets.only(left: 25.0),
                 child: TextFormField(
@@ -186,21 +183,21 @@ class forgotMain2 extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
+            SizedBox(
               width: 150,
               height: 150,
               child: Image.asset('images/forgot.png'),
             ),
             Container(
               child: const Text(
-                'Jum Mai Dai.',
+                'New password',
                 style: TextStyle(
                     color: kAppColor,
                     fontSize: 40.0,
                     fontWeight: FontWeight.bold),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.fromLTRB(32, 18, 32, 0),
               child: forgotPassword(),
             )
@@ -208,7 +205,6 @@ class forgotMain2 extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }
 
@@ -241,7 +237,7 @@ class _forgotPasswordState extends State<forgotPassword> {
             child: Container(
               decoration: BoxDecoration(
                   color: kTextFieldColor,
-                  borderRadius: new BorderRadius.circular(50.0)),
+                  borderRadius: BorderRadius.circular(50.0)),
               child: Padding(
                 padding: const EdgeInsets.only(left: 25.0),
                 child: TextFormField(
@@ -269,7 +265,7 @@ class _forgotPasswordState extends State<forgotPassword> {
             child: Container(
               decoration: BoxDecoration(
                   color: kTextFieldColor,
-                  borderRadius: new BorderRadius.circular(50.0)),
+                  borderRadius: BorderRadius.circular(50.0)),
               child: Padding(
                 padding: const EdgeInsets.only(left: 25.0),
                 child: TextFormField(
@@ -311,8 +307,8 @@ class _forgotPasswordState extends State<forgotPassword> {
                   //   //       );
                   //   //     });
                   // }
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => WelcomeScreen()));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const WelcomeScreen()));
                 },
                 child: const Text(
                   "Next",

@@ -99,35 +99,11 @@ class _MoreInfoState extends State<MoreInfo> {
                       ),
                       filled: true,
                       fillColor: kBoxColor,
-                      hintText: "email",
-                      hintStyle: const TextStyle(
-                          color: kDefaultIconDarkColor, fontSize: 20),
-                      suffixIcon: const Icon(Icons.edit),
-                      suffixIconColor: kBoxColor,
-                    ),
-                    style: const TextStyle(color: kBoxColor),
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 10),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: kBoxColor,
                       hintText: "Age", //insert this value from firebase
-                      hintStyle: const TextStyle(
-                          color: kDefaultIconDarkColor, fontSize: 20),
                       suffixIcon: const Icon(Icons.edit),
                       suffixIconColor: kBoxColor,
                     ),
-                    style: const TextStyle(color: kBoxColor),
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ),
                 Padding(
@@ -144,12 +120,10 @@ class _MoreInfoState extends State<MoreInfo> {
                       filled: true,
                       fillColor: kBoxColor,
                       hintText: "Height", //insert this value from firebase
-                      hintStyle: const TextStyle(
-                          color: kDefaultIconDarkColor, fontSize: 20),
                       suffixIcon: const Icon(Icons.edit),
                       suffixIconColor: kBoxColor,
                     ),
-                    style: const TextStyle(color: kBoxColor),
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ),
                 Padding(
@@ -166,12 +140,10 @@ class _MoreInfoState extends State<MoreInfo> {
                       filled: true,
                       fillColor: kBoxColor,
                       hintText: "Weight", //insert this value from firebase
-                      hintStyle: const TextStyle(
-                          color: kDefaultIconDarkColor, fontSize: 20),
                       suffixIcon: const Icon(Icons.edit),
                       suffixIconColor: kBoxColor,
                     ),
-                    style: const TextStyle(color: kBoxColor),
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ),
                 Padding(
@@ -237,7 +209,7 @@ class _MoreInfoState extends State<MoreInfo> {
                 const TextStyle(color: kDefaultIconLightColor),
             buttonText: const Text(
               "Select your Allergic food",
-              style: TextStyle(color: kDefaultIconDarkColor, fontSize: 20),
+              style: TextStyle(color: kDefaultIconDarkColor, fontSize: 16),
             ),
             buttonIcon: const Icon(
               Icons.keyboard_arrow_down_outlined,

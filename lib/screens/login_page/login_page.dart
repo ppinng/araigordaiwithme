@@ -7,7 +7,6 @@
 
 import 'package:araigordaiwithme/constant.dart';
 import 'package:araigordaiwithme/screens/register_page/register_page.dart';
-import 'package:araigordaiwithme/screens/welcome_page/welcome_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -20,18 +19,18 @@ import '../forgotpassword_page/forgot_page.dart';
 
 class LoginScreen extends HookWidget {
   const LoginScreen({Key? key}) : super(key: key);
+  static final GlobalKey<FormState> keyForm = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    final formKey = GlobalKey<FormState>();
+    final FirebaseAuth auth = FirebaseAuth.instance;
 
-    final emailController = useTextEditingController(text: '');
-    final passwordController = useTextEditingController(text: '');
-    //final email = useState('');
+    final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
     final Size size = MediaQuery.of(context).size;
+
     Future<User> handleSignInEmail(String email, String password) async {
-      UserCredential result = await _auth.signInWithEmailAndPassword(
+      UserCredential result = await auth.signInWithEmailAndPassword(
           email: email, password: password);
       final User user = result.user!;
 
@@ -39,6 +38,7 @@ class LoginScreen extends HookWidget {
     }
 
     return Scaffold(
+      key: UniqueKey(),
       resizeToAvoidBottomInset: true,
       backgroundColor: kBackgroundColor,
       appBar: AppBar(
@@ -59,8 +59,6 @@ class LoginScreen extends HookWidget {
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -85,105 +83,118 @@ class LoginScreen extends HookWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
-                    child: Form(
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            controller: emailController,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: kBoxColor,
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  borderSide: BorderSide.none),
-                              hintText: 'E-mail',
-                              prefixIcon: const Padding(
-                                padding: EdgeInsets.only(
-                                    left: 20.0, right: 12.0, bottom: 3),
-                              ),
-                              contentPadding:
-                                  const EdgeInsets.symmetric(vertical: 16.0),
-                            ),
-                            validator: (value) {
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                      .hasMatch(value)) {
-                                return 'Please enter correct email';
-                              }
-                              return null;
-                            },
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 18, 0, 0),
-                            child: Form(
-                              child: TextFormField(
-                                controller: passwordController,
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  filled: true,
-                                  fillColor: kBoxColor,
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30.0),
-                                      borderSide: BorderSide.none),
-                                  hintText: 'Password',
-                                  prefixIcon: const Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 20.0, right: 12.0, bottom: 3),
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 16.0),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter some text';
-                                  }
-                                  if (value.length < 6) {
-                                    return "Password must be at least 6 characters";
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const forgotMain()));
-                            },
-                            style: ButtonStyle(
-                              overlayColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                (Set<MaterialState> states) {
-                                  return kBackgroundColor;
-                                },
-                              ),
-                              splashFactory: NoSplash.splashFactory,
-                            ),
-                            child: const Text(
-                              'Forgot Password?',
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: kButtonColor,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 160,
-                            child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.white,
-                                    backgroundColor: kButtonColor,
-                                    shadowColor: Colors.black,
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(
+                    child: Column(
+                      children: [
+                        Form(
+                          key: keyForm,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                TextFormField(
+                                  controller: emailController,
+                                  decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: kBoxColor,
+                                    border: OutlineInputBorder(
                                         borderRadius:
-                                            BorderRadius.circular(10))),
-                                child: const Text(
-                                  'Sign In',
-                                  style: TextStyle(fontSize: 20),
+                                            BorderRadius.circular(30.0),
+                                        borderSide: BorderSide.none),
+                                    hintText: 'E-mail',
+                                    prefixIcon: const Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 20.0, right: 12.0, bottom: 3),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        vertical: 16.0),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null ||
+                                        value.isEmpty ||
+                                        !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                            .hasMatch(value)) {
+                                      return 'Please enter correct email';
+                                    }
+                                    return null;
+                                  },
                                 ),
-                                onPressed: () {
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 18, 0, 0),
+                                  child: TextFormField(
+                                    controller: passwordController,
+                                    obscureText: true,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: kBoxColor,
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30.0),
+                                          borderSide: BorderSide.none),
+                                      hintText: 'Password',
+                                      prefixIcon: const Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 20.0, right: 12.0, bottom: 3),
+                                      ),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              vertical: 16.0),
+                                    ),
+                                    // validator: (value) {
+                                    //   if (value == null || value.isEmpty) {
+                                    //     return 'Please enter some text';
+                                    //   }
+                                    //   if (value.length < 6) {
+                                    //     return "Password must be at least 6 characters";
+                                    //   }
+                                    //   return null;
+                                    // },
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const ForgotMain()));
+                                  },
+                                  style: ButtonStyle(
+                                    overlayColor: MaterialStateProperty
+                                        .resolveWith<Color>(
+                                      (Set<MaterialState> states) {
+                                        return kBackgroundColor;
+                                      },
+                                    ),
+                                    splashFactory: NoSplash.splashFactory,
+                                  ),
+                                  child: const Text(
+                                    'Forgot Password?',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: kButtonColor,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 160,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: kButtonColor,
+                                  shadowColor: Colors.black,
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10))),
+                              child: const Text(
+                                'Sign In',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                              onPressed: () {
+                                if (keyForm.currentState!.validate()) {
                                   handleSignInEmail(emailController.text,
                                           passwordController.text)
                                       .then((User user) {
@@ -192,8 +203,8 @@ class LoginScreen extends HookWidget {
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 const HomePage()));
-                                  }).catchError(
-                                    (e) => showDialog(
+                                  }).catchError((e) async {
+                                    return await showDialog(
                                       context: context,
                                       builder: (context) => AlertDialog(
                                         backgroundColor: kBoxColor,
@@ -207,18 +218,18 @@ class LoginScreen extends HookWidget {
                                               child: const Text("OK"))
                                         ],
                                       ),
-                                    ),
-                                  );
+                                    );
+                                  });
                                 }
-                                // if (formKey.currentState!.validate()) {
-                                //   Navigator.of(context).push(MaterialPageRoute(
-                                //       builder: (context) => const HomePage()));
-                                // }
+                              }
+                              // if (formKey.currentState!.validate()) {
+                              //   Navigator.of(context).push(MaterialPageRoute(
+                              //       builder: (context) => const HomePage()));
+                              // }
 
-                                ),
-                          ),
-                        ],
-                      ),
+                              ),
+                        ),
+                      ],
                     ),
                   ),
 
