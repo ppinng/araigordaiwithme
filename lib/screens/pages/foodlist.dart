@@ -9,6 +9,7 @@ import '../../components/menu_bar.dart';
 import '../../components/random.dart';
 
 class Menu {
+  final int id;
   final String name;
   final String image;
   final int calories;
@@ -16,7 +17,8 @@ class Menu {
   final String location;
 
   Menu(
-      {required this.name,
+      {required this.id,
+      required this.name,
       required this.image,
       required this.calories,
       required this.price,
@@ -34,30 +36,35 @@ class FoodList extends StatelessWidget {
 
   final List<Menu> menus = [
     Menu(
+        id: 1,
         name: 'Spicy fried chicken with basil leaves',
         image: 'images/krapao.png',
         calories: 250,
         price: 10.99,
         location: 'New York'),
     Menu(
+        id: 2,
         name: 'Spicy Chicken Wings',
         image: 'images/wingsaps.png',
         calories: 350,
         price: 14.99,
         location: 'Los Angeles'),
     Menu(
+        id: 3,
         name: 'Grilled Chicken',
         image: 'images/kaiyang.png',
         calories: 450,
         price: 19.99,
         location: 'Chicago'),
     Menu(
+        id: 4,
         name: 'Chicken rice ',
         image: 'images/kaowmungai.png',
         calories: 550,
         price: 24.99,
         location: 'Houston'),
     Menu(
+        id: 5,
         name: 'Papaya Salad',
         image: 'images/papayasalad.png',
         calories: 650,
