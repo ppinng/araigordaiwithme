@@ -1,7 +1,9 @@
 import 'package:araigordaiwithme/constant.dart';
+import 'package:araigordaiwithme/services/firebase_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../screens/pages/userpage.dart';
 
 class DrawerBar extends StatelessWidget {
@@ -61,12 +63,15 @@ class DrawerBar extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 20),
                     child: TextButton(
-                      onPressed: () {
-                        FirebaseAuth.instance.signOut().then((value) {
-                          print('Signed out');
-                          Navigator.of(context)
-                              .popUntil(ModalRoute.withName('/'));
-                        });
+                      onPressed: () async{
+                        await FirebaseServices().signOut();
+                        Navigator.of(context).popUntil(ModalRoute.withName('/'));
+                        // FirebaseAuth.instance.signOut().then((value) {
+                        //   print('Signed out');
+                        //   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const WelcomeScreen()),(route) => false)))
+                        //   // Navigator.of(context)
+                        //   //     .popUntil(ModalRoute.withName('/'));
+                        // });
                       },
                       child: const Text(
                         'Log out',

@@ -1,19 +1,10 @@
-// Add GoRouter configuration outside the App class
-//import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-// import 'package:flutter/material.dart';
-// import 'package:go_router/go_router.dart';
-
-// import '../Home_page/home_page.dart';
-
 import 'package:araigordaiwithme/constant.dart';
 import 'package:araigordaiwithme/screens/register_page/register_page.dart';
+import 'package:araigordaiwithme/services/firebase_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-
 import '../Home_page/home_page.dart';
 import '../forgotpassword_page/forgot_page.dart';
 
@@ -140,15 +131,6 @@ class LoginScreen extends HookWidget {
                                           const EdgeInsets.symmetric(
                                               vertical: 16.0),
                                     ),
-                                    // validator: (value) {
-                                    //   if (value == null || value.isEmpty) {
-                                    //     return 'Please enter some text';
-                                    //   }
-                                    //   if (value.length < 6) {
-                                    //     return "Password must be at least 6 characters";
-                                    //   }
-                                    //   return null;
-                                    // },
                                   ),
                                 ),
                                 TextButton(
@@ -221,13 +203,7 @@ class LoginScreen extends HookWidget {
                                     );
                                   });
                                 }
-                              }
-                              // if (formKey.currentState!.validate()) {
-                              //   Navigator.of(context).push(MaterialPageRoute(
-                              //       builder: (context) => const HomePage()));
-                              // }
-
-                              ),
+                              }),
                         ),
                       ],
                     ),
@@ -305,8 +281,10 @@ class LoginScreen extends HookWidget {
                                   backgroundColor: kButtonColor,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10))),
-                              onPressed: () {
-                                signInWithGoogle();
+                              onPressed: () async {
+                                await FirebaseServices().signInWithGoogle();
+                                Navigator.push(context, 
+                                 MaterialPageRoute(builder: (context) => const HomePage()));
                               },
                               child: Row(
                                 children: [
@@ -361,40 +339,4 @@ class LoginScreen extends HookWidget {
       ),
     );
   }
-
-  signInWithGoogle() async {
-    GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-
-    AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-
-    UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithCredential(credential);
-
-    // debugPrint(userCredential.user?.displayName);
-    // Not finish yet
-    // if(userCredential.user != null) {
-    //   Navigator.of(context).push(
-    //                                         MaterialPageRoute(
-    //                                             builder: (context) =>
-    //                                                  SignupScreen()));
-    // }
-  }
 }
-
-
-
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     if (_formKey.currentState!.validate()) {
-                  //       _formKey.currentState!.save();
-                  //       print(_emailController.text);
-                  //       print(_passwordController.text);
-                  //     }
-                  //   },
-                  //   child: const Text('Save'),
-                  // ),
