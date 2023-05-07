@@ -26,6 +26,14 @@ class _ForgotMainState extends State<ForgotMain> {
     try {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: _emailController.text.trim());
+      // ignore: use_build_context_synchronously
+      showDialog(
+          context: context,
+          builder: (context) {
+            return const AlertDialog(
+              content: Text("Password reset link sent! Check your email"),
+            );
+          });
     } on FirebaseAuthException catch (e) {
       print(e.code);
       print(e.message);
@@ -64,16 +72,7 @@ class _ForgotMainState extends State<ForgotMain> {
           }
           break;
         default:
-          {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return const AlertDialog(
-                    content: Text("Password reset link sent! Check your email"),
-                  );
-                });
-            Navigator.of(context).pop();
-          }
+          {}
           break;
       }
     }
