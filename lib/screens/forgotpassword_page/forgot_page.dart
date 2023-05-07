@@ -72,6 +72,7 @@ class _ForgotMainState extends State<ForgotMain> {
                     content: Text("Password reset link sent! Check your email"),
                   );
                 });
+            Navigator.of(context).pop();
           }
           break;
       }
