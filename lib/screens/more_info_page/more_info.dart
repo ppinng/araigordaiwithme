@@ -1,11 +1,10 @@
+import 'package:araigordaiwithme/models/model_userinfo.dart';
 import 'package:araigordaiwithme/screens/Home_page/home_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-
 import '../../constant.dart';
 
 //Animal class
@@ -41,12 +40,18 @@ class _MoreInfoState extends State<MoreInfo> {
   final _items =
       _foods.map((food) => MultiSelectItem<Food>(food, food.name)).toList();
   List<Food> _selectedFoods = [];
-
+  final CollectionReference _usersInfo =
+      FirebaseFirestore.instance.collection('UsersInfo');
+  final users = FirebaseAuth.instance.currentUser;
   @override
   void initState() {
     _selectedFoods = _foods;
     super.initState();
   }
+
+  final controllerAge = TextEditingController();
+  final controllerHeight = TextEditingController();
+  final controllerWeight = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +95,7 @@ class _MoreInfoState extends State<MoreInfo> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: TextFormField(
+                    controller: controllerAge,
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 15, vertical: 10),
@@ -97,12 +103,14 @@ class _MoreInfoState extends State<MoreInfo> {
                         borderRadius: BorderRadius.circular(15.0),
                         borderSide: BorderSide.none,
                       ),
+                      label: const Text("Age"),
                       filled: true,
                       fillColor: kBoxColor,
                       hintText: "Age", //insert this value from firebase
                       suffixIcon: const Icon(Icons.edit),
                       suffixIconColor: kBoxColor,
                     ),
+                    keyboardType: TextInputType.number,
                     style: const TextStyle(color: Colors.black),
                   ),
                 ),
@@ -110,6 +118,7 @@ class _MoreInfoState extends State<MoreInfo> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: TextFormField(
+                    controller: controllerHeight,
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 15, vertical: 10),
@@ -123,6 +132,7 @@ class _MoreInfoState extends State<MoreInfo> {
                       suffixIcon: const Icon(Icons.edit),
                       suffixIconColor: kBoxColor,
                     ),
+                    keyboardType: TextInputType.number,
                     style: const TextStyle(color: Colors.black),
                   ),
                 ),
@@ -130,6 +140,7 @@ class _MoreInfoState extends State<MoreInfo> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: TextFormField(
+                    controller: controllerWeight,
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 15, vertical: 10),
@@ -143,6 +154,7 @@ class _MoreInfoState extends State<MoreInfo> {
                       suffixIcon: const Icon(Icons.edit),
                       suffixIconColor: kBoxColor,
                     ),
+                    keyboardType: TextInputType.number,
                     style: const TextStyle(color: Colors.black),
                   ),
                 ),
@@ -165,7 +177,18 @@ class _MoreInfoState extends State<MoreInfo> {
                         elevation: 5,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10))),
-                    onPressed: () {
+                    onPressed: () async {
+                      final users = FirebaseAuth.instance.currentUser;
+                      final usersInfo = Usersinformation(
+                        uid: users!.uid,
+                        email: users.email!,
+                        age: int.parse(controllerAge.text),
+                        height: int.parse(controllerHeight.text),
+                        weight: int.parse(controllerWeight.text),
+                        foods: _selectedFoods.map((food) => food.name).toList(),
+                      );
+
+                      await usersInfo.addUserInformationToFirestore();
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) =>
                               const HomePage())); // need to change to more info page
@@ -183,6 +206,21 @@ class _MoreInfoState extends State<MoreInfo> {
       ),
     );
   }
+
+  // Future<void> addUserInformationToFirestore() async {
+  //   final user = FirebaseAuth.instance.currentUser;
+  //   final CollectionReference usersInfo =
+  //       FirebaseFirestore.instance.collection('UsersInfo');
+  //   final Map<String, dynamic> userInfo = {
+  //     'uid': user?.uid,
+  //     'email': user?.email,
+  //     'age': int.parse(controllerAge.text),
+  //     'height': int.parse(controllerHeight.text),
+  //     'weight': int.parse(controllerWeight.text),
+  //     'foods': _selectedFoods.map((food) => food.name).toList(),
+  //   };
+  //   await usersInfo.doc(user!.uid).set(userInfo);
+  // }
 
   //Mulitple selection Food
   Widget multiSelect() {
@@ -238,7 +276,4 @@ class _MoreInfoState extends State<MoreInfo> {
       ],
     );
   }
-
-  //Submit Form
-  void _submitForm() {}
 }
