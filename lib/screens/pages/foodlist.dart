@@ -1,5 +1,10 @@
+import 'dart:ffi';
+
+import 'package:araigordaiwithme/screens/pages/detail.dart';
+import 'package:araigordaiwithme/screens/pages/search.dart';
 import 'package:araigordaiwithme/screens/pages/userpage.dart';
 import 'package:araigordaiwithme/screens/welcome_page/welcome_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:araigordaiwithme/constant.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -93,107 +98,143 @@ class FoodList extends StatelessWidget {
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const UserPage()));
             },
-            icon: Image.asset("images/forgot.png"),
+            icon: CircleAvatar(backgroundImage: AssetImage("images/user.jpg")),
           ),
         ],
       ),
       drawer: const DrawerBar(),
       backgroundColor: kBackgroundColor,
-      body: Column(
-        //
-        children: [
-          MyButtonLayout(),
-          RandomButton(),
-          const SizedBox(
-            height: 10,
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: menus.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Column(
-                  children: <Widget>[
-                    Container(
-                      width: 348,
-                      height: 100,
-                      margin: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance.collection('Food').snapshots(),
+          builder: (context, snapshots) {
+            return (snapshots.connectionState == ConnectionState.waiting)
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : Column(
+                    children: [
+                      MyButtonLayout(),
+                      RandomButton(),
+                      const SizedBox(
+                        height: 10,
                       ),
-                      child: Stack(
-                        children: [
-                          Row(
-                            //Food image
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 20, right: 20),
-                                child: Image.asset(
-                                  menus[index].image,
-                                  height: 75,
-                                  width: 100,
-                                  colorBlendMode: BlendMode.darken,
-                                  fit: BoxFit.cover,
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: snapshots.data!.docs.length - 1,
+                          itemBuilder: (context, index) {
+                            var data = snapshots.data!.docs[index].data()
+                                as Map<String, dynamic>;
+                            return Column(
+                              children: <Widget>[
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (context) => FoodDetail(
+                                                  documentId: snapshots
+                                                      .data!.docs[index].id,
+                                                )));
+                                  },
+                                  child: Container(
+                                    width: 348,
+                                    height: 100,
+                                    margin: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        Row(
+                                          //Food image
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 20, right: 20),
+                                              child: Image.network(
+                                                data['image'],
+                                                height: 75,
+                                                width: 100,
+                                                colorBlendMode:
+                                                    BlendMode.darken,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                            //Food Name
+                                            Expanded(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                  Text(
+                                                    data['name'],
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  //Food Calories
+                                                  Text(
+                                                    'Calories: ${data['calories']}',
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        //Grey Box bottom right
+                                        const FavoriteButton(),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              //Food Name
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      menus[index].name,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    //Food Calories
-                                    Text(
-                                      'Calories: ${menus[index].calories}',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          //Grey Box bottom right
-                          const FavoriteButton(),
-                        ],
+                              ],
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+                    ],
+                  );
+          }),
     );
   }
 
   // void setState(Null Function() param0) {}
 }
 
-class SearchField extends StatelessWidget {
+class SearchField extends StatefulWidget {
   SearchField({super.key});
+
+  @override
+  State<SearchField> createState() => _SearchFieldState();
+}
+
+class _SearchFieldState extends State<SearchField> {
   final _formKey = GlobalKey<FormState>();
   final _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 45,
       child: TextField(
+        readOnly: true,
         controller: _searchController,
+        autofocus: false,
         style: const TextStyle(color: Colors.black),
         cursorColor: Colors.black,
         decoration: InputDecoration(
@@ -211,8 +252,9 @@ class SearchField extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
           ),
         ),
-        onChanged: (value) {
-          // Perform search functionality here
+        onTap: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => const Search()));
         },
       ),
     );
@@ -229,6 +271,30 @@ class FavoriteButton extends StatefulWidget {
 
 class _FavoriteButtonState extends State<FavoriteButton> {
   bool isFavorite = false;
+
+  CollectionReference food = FirebaseFirestore.instance.collection('Food');
+
+  Future updateFavorite() {
+    return food.doc('5bddBd4Znc1lKI1n5KrN').update({'favorite': !isFavorite});
+  }
+
+  List<String> favoriteStatus = [];
+
+  Future getDocId() async {
+    await FirebaseFirestore.instance
+        .collection('Food')
+        .get()
+        .then((snapshot) => snapshot.docs.forEach((document) {
+              print(document.reference);
+              favoriteStatus.add(document.reference.id);
+            }));
+  }
+
+  @override
+  void initState() {
+    getDocId();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -257,6 +323,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
               onPressed: () {
                 setState(() {
                   isFavorite = !isFavorite;
+                  updateFavorite();
                 });
                 if (isFavorite == true) {
                   print('Add to Favorite');
