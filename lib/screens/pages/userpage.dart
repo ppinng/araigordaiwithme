@@ -118,26 +118,29 @@ class _UserPageState extends State<UserPage> {
   final _items =
       _foods.map((food) => MultiSelectItem<Food>(food, food.name)).toList();
 
-  Future<List<dynamic>> getSelectedFoods() async {
+  Future<List<Food>> getSelectedFoods() async {
     final user = FirebaseAuth.instance.currentUser;
     final snapshot = await FirebaseFirestore.instance
         .collection('UsersInfo')
         .doc(user!.uid)
         .get();
     final data = snapshot.data();
-    return data?['foods'] ?? [];
+    final selectedFoodNames = data?['foods'] ?? [];
+    final selectedFoods =
+        _foods.where((food) => selectedFoodNames.contains(food.name)).toList();
+    return selectedFoods;
   }
 
   List<dynamic> _selectedFoods = [];
   @override
-  // void initState() {
-  //   super.initState();
-  //   getSelectedFoods().then((foods) {
-  //     setState(() {
-  //       _selectedFoods = foods;
-  //     });
-  //   });
-  // }
+  void initState() {
+    super.initState();
+    getSelectedFoods().then((foods) {
+      setState(() {
+        _selectedFoods = foods.cast<Food>();
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -360,7 +363,9 @@ class _UserPageState extends State<UserPage> {
                                     buttonText: const Text(
                                       "Select your Allergic food",
                                       style: TextStyle(
-                                          color: kBoxColor, fontSize: 20),
+                                        color: kBoxColor,
+                                        fontSize: 20,
+                                      ),
                                     ),
                                     buttonIcon: const Icon(
                                       Icons.keyboard_arrow_down_outlined,
