@@ -1,4 +1,5 @@
 import 'package:araigordaiwithme/constant.dart';
+import 'package:araigordaiwithme/screens/more_info_page/more_info.dart';
 import 'package:araigordaiwithme/screens/register_page/register_page.dart';
 import 'package:araigordaiwithme/services/firebase_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -284,7 +285,7 @@ class LoginScreen extends HookWidget {
                               onPressed: () async {
                                 await FirebaseServices().signInWithGoogle();
                                 Navigator.push(context, 
-                                 MaterialPageRoute(builder: (context) => const HomePage()));
+                                 MaterialPageRoute(builder: (context) => const MoreInfo()));
                               },
                               child: Row(
                                 children: [
