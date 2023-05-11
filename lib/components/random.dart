@@ -104,6 +104,7 @@ class RandomButton extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
+                      final int randomIndex = random.nextInt(menus.length);
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
