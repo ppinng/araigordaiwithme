@@ -211,7 +211,17 @@ class _SearchFieldState extends State<SearchField> {
               color: Colors.grey,
             ),
           ),
+          hintText: 'Search',
+          hintStyle: const TextStyle(
+            color: Colors.grey,
+            fontSize: 16,
+          ),
+          contentPadding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
           enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(width: 2, color: Colors.grey),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          focusedBorder: OutlineInputBorder(
             borderSide: const BorderSide(width: 2, color: Colors.grey),
             borderRadius: BorderRadius.circular(15),
           ),
