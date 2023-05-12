@@ -34,45 +34,102 @@ class FoodDetail extends StatelessWidget {
           ),
         ),
       ),
-      body: FutureBuilder<DocumentSnapshot>(
-        future: food.doc(documentId).get(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            Map<String, dynamic> data =
-                snapshot.data!.data() as Map<String, dynamic>;
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  margin: EdgeInsets.all(8),
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(15)),
-                  child: Image.network(
-                    data['image'],
+      body: Container(
+        padding: const EdgeInsets.all(16.0),
+        child: FutureBuilder<DocumentSnapshot>(
+          future: food.doc(documentId).get(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              Map<String, dynamic> data =
+                  snapshot.data!.data() as Map<String, dynamic>;
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      margin: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Image.network(
+                        data['image'],
+                        width: 300,
+                        height: 300,
+                      ),
+                    ),
                   ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(16),
-                  color: kBackgroundColor,
-                  child: Text(
-                    "${data['name']}",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                  Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      color: kBackgroundColor,
+                      child: Text(
+                        "${data['name']}",
+                        style: const TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.w700),
+                      ),
+                    ),
                   ),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-                  color: kBackgroundColor,
-                  child: Text("Calories: ${data['calories']}",
-                      style: TextStyle(fontSize: 20)),
-                )
-              ],
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                    color: kBackgroundColor,
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.location_on,
+                                  color: Colors.blue,
+                                ),
+                                Text(
+                                  "${data['canteen']}",
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.store_mall_directory,
+                                  color: kButtonColor,
+                                ),
+                                Text(
+                                  "${data['store']}",
+                                  style: const TextStyle(fontSize: 16),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.local_fire_department_sharp,
+                              color: Colors.red,
+                            ),
+                            Text(
+                              "${data['calories']} Kcal",
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              );
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
             );
-          }
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        },
+          },
+        ),
       ),
     );
   }
