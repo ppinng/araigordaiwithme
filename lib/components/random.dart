@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:araigordaiwithme/screens/pages/detail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -44,69 +45,96 @@ class _RandomButtonState extends State<RandomButton> {
             showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return Dialog(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          child: Container(
-                            width: 35,
-                            height: 35,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: Colors.grey[300],
-                              borderRadius: const BorderRadius.only(
-                                topRight: Radius.circular(15),
-                              ),
-                            ),
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.close,
-                                size: 20,
-                                color: Colors.black,
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => FoodDetail(
+                            documentId: randomDocument.id,
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(60),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const SizedBox(height: 20),
-                              SizedBox(
-                                width: 200,
-                                height: 100,
-                                child: Image.network(
-                                  data['image'],
+                      );
+                    },
+                    child: Dialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: Container(
+                              width: 35,
+                              height: 35,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: const BorderRadius.only(
+                                  topRight: Radius.circular(15),
                                 ),
                               ),
-                              const SizedBox(height: 20),
-                              Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  data['name'],
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
+                              child: IconButton(
+                                icon: const Icon(
+                                  Icons.close,
+                                  size: 20,
+                                  color: Colors.black,
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(60),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(height: 20),
+                                SizedBox(
+                                  // width: 200,
+                                  // height: 100,
+                                  child: Image.network(
+                                    data['image'],
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                '${data['calories']} Kcal/ 1 bowl',
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                                const SizedBox(height: 20),
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    data['name'],
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  '${data['calories']} Kcal/ 1 bowl',
+                                  textAlign: TextAlign.center,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(0),
+                                  child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: kButtonColor),
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => FoodDetail(
+                                              documentId: randomDocument.id,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: Text('Detail')),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   );
                 });
