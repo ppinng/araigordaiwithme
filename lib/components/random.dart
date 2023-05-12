@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:araigordaiwithme/screens/pages/detail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:araigordaiwithme/constant.dart';
@@ -12,6 +13,9 @@ class RandomButton extends StatefulWidget {
   @override
   State<RandomButton> createState() => _RandomButtonState();
 }
+
+final CollectionReference viewHistoryCollection =
+    FirebaseFirestore.instance.collection('ViewHistory');
 
 class _RandomButtonState extends State<RandomButton> {
   @override
@@ -46,7 +50,7 @@ class _RandomButtonState extends State<RandomButton> {
                 context: context,
                 builder: (BuildContext context) {
                   return GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => FoodDetail(
@@ -127,6 +131,11 @@ class _RandomButtonState extends State<RandomButton> {
                                             ),
                                           ),
                                         );
+                                        viewHistoryCollection.add({
+                                          'uid': 'your_user_id_here',
+                                          'foodid': randomDocument.id,
+                                          'viewat': DateTime.now().toString(),
+                                        });
                                       },
                                       child: Text('Detail')),
                                 )
