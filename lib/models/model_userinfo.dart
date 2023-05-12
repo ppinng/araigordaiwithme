@@ -18,6 +18,17 @@ class Usersinformation {
     required this.foods,
   });
 
+  toJson() {
+    return {
+      'uid': uid,
+      'email': email,
+      'age': age,
+      'height': height,
+      'weight': weight,
+      'foods': List<dynamic>.from(foods.map((food) => food)),
+    };
+  }
+
   factory Usersinformation.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document) {
     final data = document.data()!;
     return Usersinformation(
@@ -29,18 +40,6 @@ class Usersinformation {
       foods: List<String>.from(["foods"].map((food) => food)),
     );
   }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'uid': users?.uid,
-      'email': users?.email,
-      'age': age,
-      'height': height,
-      'weight': weight,
-      'foods': List<dynamic>.from(foods.map((food) => food)),
-    };
-  }
-
   Future<void> addUserInformationToFirestore() async {
     final user = FirebaseAuth.instance.currentUser;
     final CollectionReference usersInfo =
