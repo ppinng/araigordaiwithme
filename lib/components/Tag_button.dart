@@ -104,7 +104,7 @@ class _MyButtonLayoutState extends State<MyButtonLayout> {
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'Flavour',
+              'Food Type',
               style: TextStyle(
                 fontSize: 22.0,
                 fontWeight: FontWeight.bold,
@@ -120,19 +120,35 @@ class _MyButtonLayoutState extends State<MyButtonLayout> {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: const [
-                  ToggleColorButton(text: 'Spicy'),
+                  ToggleColorButton(text: 'Meat'),
                   SizedBox(
                     width: 20,
                   ),
-                  ToggleColorButton(text: 'Sweet'),
+                  ToggleColorButton(text: 'Noodles'),
                   SizedBox(
                     width: 20,
                   ),
-                  ToggleColorButton(text: 'Sour'),
+                  ToggleColorButton(text: 'Rice dishes'),
                   SizedBox(
                     width: 20,
                   ),
-                  ToggleColorButton(text: 'Salty'),
+                  // ToggleColorButton(text: 'Vegetable'),
+                  // SizedBox(
+                  //   width: 20,
+                  // ),
+                  ToggleColorButton(text: 'Frying'),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  ToggleColorButton(text: 'Stir-Frying'),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  ToggleColorButton(text: 'Grilling'),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  ToggleColorButton(text: 'Boiling'),
                   SizedBox(
                     width: 20,
                   ),
