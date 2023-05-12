@@ -1,7 +1,5 @@
 import 'package:araigordaiwithme/controller/profile_controller.dart';
 import 'package:araigordaiwithme/screens/Home_page/home_page.dart';
-import 'package:araigordaiwithme/screens/more_info_page/more_info.dart';
-import 'package:araigordaiwithme/screens/pages/foodlist.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +72,6 @@ class _EditConfirmationDialogState extends State<EditConfirmationDialog> {
 }
 
 //Confirm to Edit User Information
-void _submitForm() {}
 
 //page section
 class Food {
@@ -97,10 +94,6 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   //user information, provided from firebase
   String _image = "images/user.jpg";
-  String _email = "hiwkao01@gmail.com";
-  String _age = "20";
-  String _height = "170";
-  String _weight = "70";
 
   //allergic food, provided from firebase
   static final List<Food> _foods = [
@@ -114,12 +107,12 @@ class _UserPageState extends State<UserPage> {
     Food(id: 8, name: "Nuts"),
     Food(id: 9, name: "Wheat"),
   ];
-
+  final user = FirebaseAuth.instance.currentUser;
+  final controller = Get.put(ProfileController());
   final _items =
       _foods.map((food) => MultiSelectItem<Food>(food, food.name)).toList();
 
   Future<List<Food>> getSelectedFoods() async {
-    final user = FirebaseAuth.instance.currentUser;
     final snapshot = await FirebaseFirestore.instance
         .collection('UsersInfo')
         .doc(user!.uid)
@@ -132,12 +125,15 @@ class _UserPageState extends State<UserPage> {
   }
 
   List<dynamic> _selectedFoods = [];
+  List<String> _selectedAllergicFoods = []; // Add this line
   @override
   void initState() {
     super.initState();
     getSelectedFoods().then((foods) {
       setState(() {
         _selectedFoods = foods.cast<Food>();
+        _selectedAllergicFoods =
+            _selectedFoods.map((food) => food.name.toString()).toList();
       });
     });
   }
@@ -171,6 +167,14 @@ class _UserPageState extends State<UserPage> {
               if (snapshot.hasData) {
                 //Call data
                 Usersinformation userData = snapshot.data as Usersinformation;
+                //Controllers
+                final email = TextEditingController(text: userData.email);
+                final age =
+                    TextEditingController(text: userData.age.toString());
+                final height =
+                    TextEditingController(text: userData.height.toString());
+                final weight =
+                    TextEditingController(text: userData.weight.toString());
                 return Column(
                   children: [
                     Stack(
@@ -236,7 +240,8 @@ class _UserPageState extends State<UserPage> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
                             child: TextFormField(
-                              initialValue: userData.email,
+                              controller: email,
+                              //initialValue: userData.email,
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
                                     horizontal: 15, vertical: 10),
@@ -259,7 +264,8 @@ class _UserPageState extends State<UserPage> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
                             child: TextFormField(
-                              initialValue: userData.age.toString(),
+                              controller: age,
+                              //initialValue: userData.age.toString(),
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
                                     horizontal: 15, vertical: 10),
@@ -286,7 +292,8 @@ class _UserPageState extends State<UserPage> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
                             child: TextFormField(
-                              initialValue: userData.height.toString(),
+                              controller: height,
+                              //initialValue: userData.height.toString(),
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
                                     horizontal: 15, vertical: 10),
@@ -313,7 +320,8 @@ class _UserPageState extends State<UserPage> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
                             child: TextFormField(
-                              initialValue: userData.weight.toString(),
+                              controller: weight,
+                              //initialValue: userData.weight.toString(),
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.symmetric(
                                     horizontal: 15, vertical: 10),
@@ -401,8 +409,23 @@ class _UserPageState extends State<UserPage> {
                               backgroundColor: MaterialStateProperty.all<Color>(
                                   kButtonColor),
                             ),
-                            onPressed: () {
-                              _submitForm();
+                            onPressed: () async {
+                              final userdata = Usersinformation(
+                                uid: user!.uid,
+                                email: email.text.trim(),
+                                age: int.parse(age.text),
+                                height: int.parse(height.text),
+                                weight: int.parse(weight.text),
+                                foods: _selectedFoods
+                                    .map((food) => food.name as String)
+                                    .toList(),
+                              );
+                              setState(() {
+                                _selectedAllergicFoods = _selectedFoods
+                                    .map((food) => food.name as String)
+                                    .toList();
+                              });
+                              await controller.updateUserInformation(userdata);
                             },
                             child: const Text(
                               'Confirm',

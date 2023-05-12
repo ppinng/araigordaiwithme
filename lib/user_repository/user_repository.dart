@@ -23,4 +23,8 @@ class UserRepository extends GetxController {
         snapshot.docs.map((e) => Usersinformation.fromSnapshot(e)).toList();
     return userData;
   }
+
+  Future<void> updateUserInformation(Usersinformation user) async{
+    await _db.collection("UsersInfo").doc(user.uid).update(user.toJson());
+  }
 }

@@ -191,14 +191,28 @@ class LoginScreen extends HookWidget {
                                       context: context,
                                       builder: (context) => AlertDialog(
                                         backgroundColor: kBoxColor,
-                                        title: const Text("Sign in failed"),
+                                        title: const Text(
+                                          "Sign in failed",
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.w700),
+                                        ),
                                         content: const Text(
-                                            "Please check your email and password"),
+                                          "Please check your email and password",
+                                          style: TextStyle(
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.w600),
+                                        ),
                                         actions: [
                                           TextButton(
                                               onPressed: () =>
                                                   Navigator.pop(context),
-                                              child: const Text("OK"))
+                                              child: const Text(
+                                                "OK",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Colors.green),
+                                              ))
                                         ],
                                       ),
                                     );
@@ -284,8 +298,11 @@ class LoginScreen extends HookWidget {
                                       borderRadius: BorderRadius.circular(10))),
                               onPressed: () async {
                                 await FirebaseServices().signInWithGoogle();
-                                Navigator.push(context, 
-                                 MaterialPageRoute(builder: (context) => const MoreInfo()));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const MoreInfo()));
                               },
                               child: Row(
                                 children: [
