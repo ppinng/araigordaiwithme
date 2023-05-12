@@ -223,14 +223,10 @@ class _UserPageState extends State<UserPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(
+                    SizedBox(
                       child: Align(
                         alignment: Alignment.topRight,
-                        child: Text(
-                          "BMR: 1296 Kcal",
-                          style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.bold),
-                        ),
+                        child: SwitchWidget(),
                       ),
                     ),
                     Form(
@@ -457,63 +453,6 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  //Profile Widget
-  Widget imageProfile() {
-    return Stack(
-      children: [
-        SizedBox(
-          width: 120,
-          height: 120,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(100),
-            child: Image.asset("images/user.jpg"),
-          ),
-        ),
-        Positioned(
-          bottom: 0,
-          right: 0,
-          child: GestureDetector(
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (_) => EditConfirmationDialog(
-                  fieldName: "Image",
-                  initialValue: _image,
-                  onConfirm: (value) {
-                    setState(() {
-                      _image = value;
-                    });
-                  },
-                ),
-              );
-            },
-            child: Container(
-              width: 30,
-              height: 30,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-                color: kButtonColor,
-              ),
-              child: const Icon(
-                Icons.edit_outlined,
-                size: 23,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ),
-        const Align(
-          alignment: Alignment.bottomRight,
-          child: Text(
-            "BMR: 1296 Kcal",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
-    );
-  }
-
 //Multiple Selection: Allergic Food
   // Widget multiSelect() {
   //   return Column(
@@ -569,4 +508,97 @@ class _UserPageState extends State<UserPage> {
   //     ],
   //   );
   // }
+}
+
+class SwitchWidget extends StatefulWidget {
+  @override
+  SwitchWidgetClass createState() => new SwitchWidgetClass();
+}
+
+class SwitchWidgetClass extends State {
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  int weight = 0;
+  int height = 0;
+  int age = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserInfo();
+  }
+
+  Future<void> fetchUserInfo() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final DocumentSnapshot<Map<String, dynamic>> snapshot =
+        await firestore.collection("UsersInfo").doc(user!.uid).get();
+    if (snapshot.exists) {
+      final Map<String, dynamic> data = snapshot.data()!;
+      setState(() {
+        weight = data.containsKey("weight") ? data["weight"] : 0;
+        height = data.containsKey("height") ? data["height"] : 0;
+        age = data.containsKey("age") ? data["age"] : 0;
+      });
+    }
+  }
+
+  bool switchControl = false;
+  var textHolder = 'Switch to show BMR';
+  var gender = 'female';
+  var switchIcon;
+
+  void toggleSwitch(bool value, int weight, int height, int age) {
+    if (switchControl == false || switchControl == null) {
+      double bmr;
+      bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
+      setState(() {
+        switchControl = true;
+        textHolder = 'BMR: ${bmr.toStringAsFixed(0)} Kcal';
+        switchIcon = Icons.male;
+      });
+      print('BMR: ${bmr.toStringAsFixed(0)} Kcal');
+      gender = 'male';
+    } else {
+      double bmr;
+      bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
+      setState(() {
+        switchControl = false;
+        textHolder = 'BMR: ${bmr.toStringAsFixed(0)} Kcal';
+        switchIcon = Icons.female;
+      });
+      print('BMR: ${bmr.toStringAsFixed(0)} Kcal');
+      gender = 'female';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Text(
+          textHolder,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        ),
+        switchIcon != null
+            ? Icon(
+                switchIcon,
+                color: gender == 'male' ? Colors.blue : Colors.pink[300],
+                size: 28.0,
+              )
+            : const SizedBox(width: 0),
+        Transform.scale(
+          scale: 1,
+          child: Switch(
+            onChanged: (value) => toggleSwitch(value, weight, height, age),
+            value: switchControl ?? false,
+            activeColor: Colors.blue,
+            activeTrackColor: kBoxColor,
+            inactiveThumbColor: Colors.pink[300],
+            inactiveTrackColor: kBoxColor,
+          ),
+        ),
+      ],
+    );
+  }
 }
