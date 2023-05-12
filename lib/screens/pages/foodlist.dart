@@ -5,6 +5,7 @@ import 'package:araigordaiwithme/screens/pages/search.dart';
 import 'package:araigordaiwithme/screens/pages/userpage.dart';
 import 'package:araigordaiwithme/screens/welcome_page/welcome_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:araigordaiwithme/constant.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -72,13 +73,31 @@ class FoodList extends StatelessWidget {
                             return Column(
                               children: <Widget>[
                                 GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                            builder: (context) => FoodDetail(
-                                                  documentId: snapshots
-                                                      .data!.docs[index].id,
-                                                )));
+                                  onTap: () async {
+                                    final user =
+                                        FirebaseAuth.instance.currentUser;
+                                    if (user != null) {
+                                      final viewAt = Timestamp.now();
+                                      final foodId =
+                                          snapshots.data!.docs[index].id;
+                                      final viewHistoryRef = FirebaseFirestore
+                                          .instance
+                                          .collection('ViewHistory');
+                                      await viewHistoryRef.add({
+                                        'uid': user.uid,
+                                        'foodid': foodId,
+                                        'viewat': viewAt,
+                                      });
+                                    }
+
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => FoodDetail(
+                                          documentId:
+                                              snapshots.data!.docs[index].id,
+                                        ),
+                                      ),
+                                    );
                                   },
                                   child: Container(
                                     width: 348,
