@@ -273,6 +273,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
   bool isFavorite = false;
 
   CollectionReference food = FirebaseFirestore.instance.collection('Food');
+  CollectionReference foodJoin = FirebaseFirestore.instance.collection('Food');
 
   Future updateFavorite() {
     return food.doc('5bddBd4Znc1lKI1n5KrN').update({'favorite': !isFavorite});
@@ -285,16 +286,16 @@ class _FavoriteButtonState extends State<FavoriteButton> {
         .collection('Food')
         .get()
         .then((snapshot) => snapshot.docs.forEach((document) {
-              print(document.reference);
+              // print(document.reference);
               favoriteStatus.add(document.reference.id);
             }));
   }
 
-  @override
-  void initState() {
-    getDocId();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   getDocId();
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
