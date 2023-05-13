@@ -1,9 +1,7 @@
 import 'package:araigordaiwithme/constant.dart';
 import 'package:araigordaiwithme/services/firebase_services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import '../screens/pages/userpage.dart';
 
 class DrawerBar extends StatelessWidget {
@@ -14,17 +12,26 @@ class DrawerBar extends StatelessWidget {
     return NavigationDrawer(
       backgroundColor: kBackgroundColor,
       children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 50, 14, 0),
+              child: SizedBox(
+                height: 150,
+                width: 150,
+                child: Image.asset("images/AppLogo.png"),
+              ),
+            ),
+          ],
+        ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(30, 55, 0, 0),
+          padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 100,
-                width: 100,
-                child: Image.asset("images/forgot.png"),
-              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
                 child: Row(
@@ -63,9 +70,10 @@ class DrawerBar extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 20),
                     child: TextButton(
-                      onPressed: () async{
+                      onPressed: () async {
                         await FirebaseServices().signOut();
-                        Navigator.of(context).popUntil(ModalRoute.withName('/'));
+                        Navigator.of(context)
+                            .popUntil(ModalRoute.withName('/'));
                         // FirebaseAuth.instance.signOut().then((value) {
                         //   print('Signed out');
                         //   Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const WelcomeScreen()),(route) => false)))
