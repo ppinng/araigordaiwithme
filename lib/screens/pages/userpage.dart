@@ -223,7 +223,7 @@ class _UserPageState extends State<UserPage> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       child: Align(
                         alignment: Alignment.topRight,
                         child: SwitchWidget(),
@@ -511,8 +511,10 @@ class _UserPageState extends State<UserPage> {
 }
 
 class SwitchWidget extends StatefulWidget {
+  const SwitchWidget({super.key});
+
   @override
-  SwitchWidgetClass createState() => new SwitchWidgetClass();
+  SwitchWidgetClass createState() => SwitchWidgetClass();
 }
 
 class SwitchWidgetClass extends State {
@@ -548,7 +550,7 @@ class SwitchWidgetClass extends State {
   var switchIcon;
 
   void toggleSwitch(bool value, int weight, int height, int age) {
-    if (switchControl == false || switchControl == null) {
+    if (switchControl == false) {
       double bmr;
       bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
       setState(() {

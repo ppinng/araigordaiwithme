@@ -1,8 +1,5 @@
 import 'package:araigordaiwithme/constant.dart';
-
-import 'package:araigordaiwithme/screens/welcome_page/welcome_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -40,35 +37,41 @@ class _ForgotMainState extends State<ForgotMain> {
       switch (e.code) {
         case "unknown":
           {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return const AlertDialog(
-                    content: Text("Please enter a valid email"),
-                  );
-                });
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                backgroundColor: kBoxColor,
+                content: Text(
+                  "Please enter your email",
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            );
           }
           break;
         case "user-not-found":
           {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return const AlertDialog(
-                    content: Text("This user does not exist"),
-                  );
-                });
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                backgroundColor: kBoxColor,
+                content: Text(
+                  "This user does not exist",
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            );
           }
           break;
         case "invalid-email":
           {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return const AlertDialog(
-                    content: Text("Please enter a valid email"),
-                  );
-                });
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                backgroundColor: kBoxColor,
+                content: Text(
+                  "Please enter a valid email",
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            );
           }
           break;
         default:
@@ -119,7 +122,7 @@ class _ForgotMainState extends State<ForgotMain> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(32, 18, 32, 0),
+              padding: const EdgeInsets.fromLTRB(32, 18, 32, 0),
               child: Container(
                 decoration: BoxDecoration(
                     color: kTextFieldColor,
@@ -137,11 +140,10 @@ class _ForgotMainState extends State<ForgotMain> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
               child: SizedBox(
                 width: 160,
                 child: ElevatedButton(
-                  child: Text(style: TextStyle(fontSize: 20), "Next"),
                   style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
                       backgroundColor: kButtonColor,
@@ -150,6 +152,7 @@ class _ForgotMainState extends State<ForgotMain> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10))),
                   onPressed: passwordReset,
+                  child: const Text(style: TextStyle(fontSize: 20), "Next"),
                 ),
               ),
             )

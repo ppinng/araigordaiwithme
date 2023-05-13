@@ -1,11 +1,7 @@
 import 'package:araigordaiwithme/user_repository/user_repository.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:araigordaiwithme/models/model_userinfo.dart';
-
-
 
 class ProfileController extends GetxController {
   static ProfileController get instance => Get.find();

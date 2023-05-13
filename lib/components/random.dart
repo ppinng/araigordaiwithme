@@ -1,14 +1,11 @@
 import 'dart:math';
-
 import 'package:araigordaiwithme/screens/pages/detail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:araigordaiwithme/constant.dart';
 
 class RandomButton extends StatefulWidget {
-  RandomButton({super.key});
+  const RandomButton({super.key});
 
   @override
   State<RandomButton> createState() => _RandomButtonState();
@@ -119,7 +116,7 @@ class _RandomButtonState extends State<RandomButton> {
                                   textAlign: TextAlign.center,
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.all(0),
+                                  padding: const EdgeInsets.all(0),
                                   child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                           backgroundColor: kButtonColor),
@@ -137,7 +134,7 @@ class _RandomButtonState extends State<RandomButton> {
                                           'viewat': DateTime.now().toString(),
                                         });
                                       },
-                                      child: Text('Detail')),
+                                      child: const Text('Detail')),
                                 )
                               ],
                             ),
