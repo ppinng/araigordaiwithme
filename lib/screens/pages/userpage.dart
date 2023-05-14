@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:araigordaiwithme/controller/profile_controller.dart';
 import 'package:araigordaiwithme/screens/Home_page/home_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:araigordaiwithme/constant.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,69 +13,6 @@ import 'package:get/get.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 import '../../models/model_userinfo.dart';
-
-//Confirm to Edit Image
-class EditConfirmationDialog extends StatefulWidget {
-  final String fieldName;
-  final String initialValue;
-  final void Function(String newValue) onConfirm;
-
-  const EditConfirmationDialog({
-    Key? key,
-    required this.fieldName,
-    required this.initialValue,
-    required this.onConfirm,
-  }) : super(key: key);
-
-  @override
-  _EditConfirmationDialogState createState() => _EditConfirmationDialogState();
-}
-
-class _EditConfirmationDialogState extends State<EditConfirmationDialog> {
-  late TextEditingController _controller;
-
-  @override
-  void initState() {
-    _controller = TextEditingController(text: widget.initialValue);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text("Edit ${widget.fieldName}"),
-      content: TextField(
-        controller: _controller,
-        decoration: InputDecoration(
-          hintText: "Enter new ${widget.fieldName.toLowerCase()}",
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: const Text("Cancel"),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            widget.onConfirm(_controller.text);
-            Navigator.of(context).pop();
-          },
-          child: const Text("Confirm"),
-        ),
-      ],
-    );
-  }
-}
-
-//Confirm to Edit User Information
 
 //page section
 class Food {
@@ -92,9 +33,6 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
-  //user information, provided from firebase
-  String _image = "images/user.jpg";
-
   //allergic food, provided from firebase
   static final List<Food> _foods = [
     Food(id: 1, name: "Egg"),
@@ -138,6 +76,90 @@ class _UserPageState extends State<UserPage> {
     });
   }
 
+  // Define pickedFile here
+  PlatformFile? pickedFile;
+  UploadTask? uploadTask;
+
+  //Upload Image
+  Future selectFile() async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result == null) return;
+    setState(() {
+      pickedFile = result.files.first;
+    });
+  }
+
+  final firestore = FirebaseFirestore.instance;
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  Future uploadFile() async {
+    final path = 'images/${pickedFile!.name}_$userId';
+    final file = File(pickedFile!.path!);
+
+    final ref = FirebaseStorage.instance.ref().child(path);
+    uploadTask = ref.putFile(file);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return const AlertDialog(
+              backgroundColor: kUserPageFieldColor,
+              title: Text("Uploading Image"),
+              content: SizedBox(
+                width: 140,
+                height: 100,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    await uploadTask!.whenComplete(() {
+      Navigator.pop(context); // Close the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return const AlertDialog(
+            backgroundColor: kUserPageFieldColor,
+            title: Text("Upload Completed"),
+            content: SizedBox(
+              width: 140,
+              height: 100,
+              child: Center(
+                child: Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 48,
+                ),
+              ),
+            ),
+          );
+        },
+      );
+      // Close the completion message after 2 seconds
+      Future.delayed(const Duration(seconds: 1), () {
+        Navigator.pop(context);
+      });
+      Future.delayed(const Duration(seconds: 1), () {
+        Navigator.pop(context);
+      });
+    });
+    final snapshot = await uploadTask!.whenComplete(() {});
+    final url = await snapshot.ref.getDownloadURL();
+    print(url);
+
+    FirebaseFirestore.instance
+        .collection("UsersInfo")
+        .doc(userId)
+        .update({"userimage": url});
+  }
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(ProfileController());
@@ -179,13 +201,42 @@ class _UserPageState extends State<UserPage> {
                   children: [
                     Stack(
                       children: [
-                        SizedBox(
-                          width: 120,
-                          height: 120,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Image.asset("images/user.jpg"),
-                          ),
+                        StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection('UsersInfo')
+                              .doc(userId)
+                              .snapshots(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<DocumentSnapshot> snapshot) {
+                            if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            }
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.waiting:
+                                return CircularProgressIndicator();
+                              default:
+                                if (!snapshot.hasData ||
+                                    snapshot.data!.data() == null) {
+                                  return Text('User not found');
+                                }
+                                final userImage = (snapshot.data!.data()
+                                    as Map<String, dynamic>)['userimage'];
+                                print('userimage: $userImage');
+                                return SizedBox(
+                                  width: 120,
+                                  height: 120,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(100),
+                                    child: Container(
+                                      color: kBoxColor,
+                                      child: userImage != null
+                                          ? Image.network(userImage)
+                                          : Image.asset("images/user.jpg"),
+                                    ),
+                                  ),
+                                );
+                            }
+                          },
                         ),
                         Positioned(
                           bottom: 0,
@@ -194,15 +245,95 @@ class _UserPageState extends State<UserPage> {
                             onTap: () {
                               showDialog(
                                 context: context,
-                                builder: (_) => EditConfirmationDialog(
-                                  fieldName: "Image",
-                                  initialValue: _image,
-                                  onConfirm: (value) {
-                                    setState(() {
-                                      _image = value;
-                                    });
-                                  },
-                                ),
+                                builder: (BuildContext context) {
+                                  return StatefulBuilder(
+                                    builder: (BuildContext context,
+                                        StateSetter setState) {
+                                      return AlertDialog(
+                                        backgroundColor: kUserPageFieldColor,
+                                        title: const Text("Upload Your Image"),
+                                        content: SingleChildScrollView(
+                                          child: SizedBox(
+                                            width: 140,
+                                            height: 180,
+                                            child: Center(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  if (pickedFile != null)
+                                                    SizedBox(
+                                                      width: 80,
+                                                      height: 80,
+                                                      child: Container(
+                                                        color: Colors.blue[100],
+                                                        child: Image.file(
+                                                          File(pickedFile!
+                                                              .path!),
+                                                          width:
+                                                              double.infinity,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ElevatedButton(
+                                                    style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all<Color>(
+                                                                  kButtonColor),
+                                                    ),
+                                                    onPressed: () async {
+                                                      await selectFile();
+                                                      setState(() {});
+                                                    },
+                                                    child: const Text(
+                                                        '   Select File   '),
+                                                  ),
+                                                  ElevatedButton(
+                                                    style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all<Color>(
+                                                                  kButtonColor),
+                                                    ),
+                                                    onPressed: () async {
+                                                      await uploadFile();
+                                                      setState(() {});
+                                                    },
+                                                    child: const Text(
+                                                        'Upload Photo'),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        actions: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  setState(() {
+                                                    pickedFile = null;
+                                                  });
+                                                },
+                                                child: const Text(
+                                                  'Close',
+                                                  style: TextStyle(
+                                                      color: kButtonColor),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
                               );
                             },
                             child: Container(
