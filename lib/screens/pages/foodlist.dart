@@ -16,6 +16,8 @@ class FoodList extends HookWidget {
   bool isFavorite = false;
   final String assetName = 'images/notfound23.svg';
   FoodList({super.key});
+  final firestore = FirebaseFirestore.instance;
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +40,40 @@ class FoodList extends HookWidget {
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const UserPage()));
             },
-            icon: const CircleAvatar(
-                backgroundImage: AssetImage("images/user.jpg")),
+            icon: Container(
+              child: StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('UsersInfo')
+                    .doc(userId)
+                    .snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<DocumentSnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return CircularProgressIndicator();
+                  }
+                  if (!snapshot.hasData || snapshot.data!.data() == null) {
+                    return CircularProgressIndicator();
+                  }
+                  final userImage = (snapshot.data!.data()
+                      as Map<String, dynamic>)['userimage'];
+                  if (userImage is String) {
+                    return CircleAvatar(
+                      backgroundColor: kBoxColor,
+                      foregroundImage: NetworkImage(userImage),
+                      child: const Icon(
+                        Icons.person,
+                        color: kButtonColor,
+                      ),
+                    );
+                  } else {
+                    return const CircleAvatar(
+                      backgroundColor: kBoxColor,
+                      foregroundImage: AssetImage("images/user.jpg"),
+                    );
+                  }
+                },
+              ),
+            ),
           ),
         ],
       ),
