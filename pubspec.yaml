@@ -49,6 +49,7 @@ dependencies:
   salomon_bottom_bar: ^3.3.2
   multi_select_flutter: ^4.1.3
   get: ^4.6.5
+  flutter_svg: ^1.1.6
 
 dependency_overrides:
   intl:
@@ -89,6 +90,7 @@ flutter:
     - images/papayasalad.png
     - images/mystery-box.png
     - images/notfound.png
+    - images/notfound23.svg
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

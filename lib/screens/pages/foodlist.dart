@@ -10,10 +10,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../components/Tag_button.dart';
 import '../../components/menu_bar.dart';
 import '../../components/random.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class FoodList extends HookWidget {
   bool isFavorite = false;
-
+  final String assetName = 'images/notfound23.svg';
   FoodList({super.key});
 
   @override
@@ -111,7 +112,7 @@ class FoodList extends HookWidget {
                         SizedBox(
                             width: 250,
                             height: 250,
-                            child: Image.asset("images/notfound.png")),
+                            child: SvgPicture.asset(assetName)),
                       ],
                     ),
                   ),

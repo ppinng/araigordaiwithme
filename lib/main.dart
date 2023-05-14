@@ -21,7 +21,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Arai Gor Dai',
       theme: ThemeData(fontFamily: 'Montserrat'),
       home: const WelcomeScreen(),
     );
