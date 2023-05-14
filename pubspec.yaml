@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  flutter_svg: ^0.22.0
   #Google Sign in
   firebase_core: ^2.10.0
   firebase_auth: ^4.4.2
@@ -89,6 +89,7 @@ flutter:
     - images/wingsaps.png
     - images/papayasalad.png
     - images/mystery-box.png
+    - images/notfound23.svg
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

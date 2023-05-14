@@ -1,59 +1,74 @@
-// ignore_for_file: library_private_types_in_public_api, duplicate_ignore, file_names
-
 import 'package:flutter/material.dart';
-
+import 'package:flutter_hooks/flutter_hooks.dart';
 import '../constant.dart';
 
-class ToggleColorButton extends StatefulWidget {
+class ToggleColorButton extends HookWidget {
   final String text;
+  final bool isPressed;
+  final void Function() onPressed;
 
-  const ToggleColorButton({super.key, required this.text});
-
-  @override
-  // ignore: library_private_types_in_public_api
-  _ToggleColorButtonState createState() => _ToggleColorButtonState();
-}
-
-class _ToggleColorButtonState extends State<ToggleColorButton> {
-  bool _isPressed = false;
-
-  void _onButtonPress() {
-    setState(() {
-      _isPressed = !_isPressed;
-    });
-  }
+  const ToggleColorButton({
+    Key? key,
+    required this.text,
+    required this.isPressed,
+    required this.onPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final buttonColor = isPressed ? kButtonColor : kTagcolor;
     return GestureDetector(
-      onTap: _onButtonPress,
-      child: Material(
-        elevation: 5, // set the elevation value
-        borderRadius: BorderRadius.circular(18),
-        color: _isPressed ? kButtonColor : kTagcolor,
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(23, 5, 23, 5),
-          child: Text(
-            widget.text,
-            style: const TextStyle(fontSize: 18),
-          ),
+      onTap: onPressed,
+      child: Container(
+        decoration: BoxDecoration(
+          color: buttonColor,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 3,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 18),
         ),
       ),
     );
   }
 }
 
-class MyButtonLayout extends StatefulWidget {
-  const MyButtonLayout({super.key});
-
-  @override
-  _MyButtonLayoutState createState() => _MyButtonLayoutState();
-}
-
-class _MyButtonLayoutState extends State<MyButtonLayout> {
-
+class MyButtonLayout extends HookWidget {
+  const MyButtonLayout({
+    Key? key,
+    required this.onFilteredChange,
+    required this.filteredLocation,
+    required this.filteredFoodType,
+  }) : super(key: key);
+  final void Function(String location, String foodType) onFilteredChange;
+  final String filteredLocation;
+  final String filteredFoodType;
   @override
   Widget build(BuildContext context) {
+    final selectedLocation = useState<String>(filteredLocation);
+    final selectedFoodType = useState<String>(filteredFoodType);
+
+    void onLocationPressed(String location) {
+      selectedLocation.value =
+          location == selectedLocation.value ? '' : location;
+      onFilteredChange(selectedLocation.value, selectedFoodType.value);
+    }
+
+    void onFoodTypePressed(String foodType) {
+      selectedFoodType.value =
+          foodType == selectedFoodType.value ? '' : foodType;
+      onFilteredChange(selectedLocation.value, selectedFoodType.value);
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -82,17 +97,33 @@ class _MyButtonLayoutState extends State<MyButtonLayout> {
             padding: const EdgeInsets.fromLTRB(25, 10, 20, 10),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
-                  ToggleColorButton(text: 'KFC'),
-                  SizedBox(
+                children: [
+                  ToggleColorButton(
+                    text: 'KFC',
+                    isPressed: selectedLocation.value == 'KFC',
+                    onPressed: () {
+                      onLocationPressed('KFC');
+                    },
+                  ),
+                  const SizedBox(
                     width: 29,
                   ),
-                  ToggleColorButton(text: 'Female Dorm'),
-                  SizedBox(
+                  ToggleColorButton(
+                      text: 'Female Dorm',
+                      isPressed: selectedLocation.value == 'Female Dorm',
+                      onPressed: () {
+                        onLocationPressed('Female Dorm');
+                      }),
+                  const SizedBox(
                     width: 29,
                   ),
-                  ToggleColorButton(text: 'Male Dorm'),
-                  SizedBox(
+                  ToggleColorButton(
+                      text: 'Male Dorm',
+                      isPressed: selectedLocation.value == 'Male Dorm',
+                      onPressed: () {
+                        onLocationPressed('Male Dorm');
+                      }),
+                  const SizedBox(
                     width: 29,
                   ),
                 ]),
@@ -119,37 +150,50 @@ class _MyButtonLayoutState extends State<MyButtonLayout> {
             padding: const EdgeInsets.fromLTRB(25, 10, 20, 10),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
-                  ToggleColorButton(text: 'Meat'),
-                  SizedBox(
+                children: [
+                  ToggleColorButton(
+                      text: 'Chicken',
+                      isPressed: selectedFoodType.value == 'chicken',
+                      onPressed: () {
+                        onFoodTypePressed('chicken');
+                      }),
+                  const SizedBox(
                     width: 20,
                   ),
-                  ToggleColorButton(text: 'Noodles'),
-                  SizedBox(
+                  ToggleColorButton(
+                      text: 'Fish',
+                      isPressed: selectedFoodType.value == 'fish',
+                      onPressed: () {
+                        onFoodTypePressed('fish');
+                      }),
+                  const SizedBox(
                     width: 20,
                   ),
-                  ToggleColorButton(text: 'Rice dishes'),
-                  SizedBox(
+                  ToggleColorButton(
+                      text: 'Meat',
+                      isPressed: selectedFoodType.value == 'meat',
+                      onPressed: () {
+                        onFoodTypePressed('meat');
+                      }),
+                  const SizedBox(
                     width: 20,
                   ),
-                  // ToggleColorButton(text: 'Vegetable'),
-                  // SizedBox(
-                  //   width: 20,
-                  // ),
-                  ToggleColorButton(text: 'Frying'),
-                  SizedBox(
+                  ToggleColorButton(
+                      text: 'Pork',
+                      isPressed: selectedFoodType.value == 'pork',
+                      onPressed: () {
+                        onFoodTypePressed('pork');
+                      }),
+                  const SizedBox(
                     width: 20,
                   ),
-                  ToggleColorButton(text: 'Stir-Frying'),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  ToggleColorButton(text: 'Grilling'),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  ToggleColorButton(text: 'Boiling'),
-                  SizedBox(
+                  ToggleColorButton(
+                      text: 'Shrimp',
+                      isPressed: selectedFoodType.value == 'shrimp',
+                      onPressed: () {
+                        onFoodTypePressed('shrimp');
+                      }),
+                  const SizedBox(
                     width: 20,
                   ),
                 ]),

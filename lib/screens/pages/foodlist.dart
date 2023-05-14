@@ -1,33 +1,27 @@
-import 'dart:ffi';
-
 import 'package:araigordaiwithme/screens/pages/detail.dart';
 import 'package:araigordaiwithme/screens/pages/search.dart';
 import 'package:araigordaiwithme/screens/pages/userpage.dart';
-import 'package:araigordaiwithme/screens/welcome_page/welcome_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:araigordaiwithme/constant.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../components/Tag_button.dart';
 import '../../components/menu_bar.dart';
 import '../../components/random.dart';
 
-class FoodList extends StatelessWidget {
-  // Color _iconColor = Colors.grey;
-
-  // void _handleTap() {
-  //   setState(() {
-  //     _iconColor = Color.fromARGB(255, 243, 33, 33);
-  //   });
-  // }
-
-  // FoodList({super.key});
+class FoodList extends HookWidget {
   bool isFavorite = false;
+
+  FoodList({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final filteredLocation = useState('');
+    final filteredFoodType = useState('');
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -37,14 +31,15 @@ class FoodList extends StatelessWidget {
             color: kBackgroundColor,
           ),
         ),
-        title: SearchField(),
+        title: const SearchField(),
         actions: [
           IconButton(
             onPressed: () {
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const UserPage()));
             },
-            icon: CircleAvatar(backgroundImage: AssetImage("images/user.jpg")),
+            icon: const CircleAvatar(
+                backgroundImage: AssetImage("images/user.jpg")),
           ),
         ],
       ),
@@ -53,130 +48,181 @@ class FoodList extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance.collection('Food').snapshots(),
           builder: (context, snapshots) {
-            return (snapshots.connectionState == ConnectionState.waiting)
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Column(
-                    children: [
-                      MyButtonLayout(),
-                      RandomButton(),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: snapshots.data!.docs.length - 1,
-                          itemBuilder: (context, index) {
-                            var data = snapshots.data!.docs[index].data()
-                                as Map<String, dynamic>;
-                            return Column(
-                              children: <Widget>[
-                                GestureDetector(
-                                  onTap: () async {
-                                    final user =
-                                        FirebaseAuth.instance.currentUser;
-                                    if (user != null) {
-                                      final viewAt = Timestamp.now();
-                                      final foodId =
-                                          snapshots.data!.docs[index].id;
-                                      final viewHistoryRef = FirebaseFirestore
-                                          .instance
-                                          .collection('ViewHistory');
-                                      await viewHistoryRef.add({
-                                        'uid': user.uid,
-                                        'foodid': foodId,
-                                        'viewat': viewAt,
-                                      });
-                                    }
+            if (snapshots.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => FoodDetail(
-                                          documentId:
-                                              snapshots.data!.docs[index].id,
+            final snapshotData = snapshots.data!.docs;
+            List<Map<String, dynamic>> filteredData = [];
+            if (filteredLocation.value.isEmpty &&
+                filteredFoodType.value.isEmpty) {
+              filteredData = snapshotData
+                  .map((e) => e.data() as Map<String, dynamic>)
+                  .toList();
+            } else if (filteredLocation.value.isNotEmpty) {
+              filteredData = snapshotData
+                  .where((e) =>
+                      (e.data() as Map<String, dynamic>)['canteen'] ==
+                      filteredLocation.value)
+                  .map((e) => e.data() as Map<String, dynamic>)
+                  .toList();
+              if (filteredFoodType.value.isEmpty) {
+                filteredData = filteredData;
+              } else {
+                filteredData = snapshotData
+                    .where((e) =>
+                        (e.data() as Map<String, dynamic>)['canteen'] ==
+                            filteredLocation.value &&
+                        e['foodtype'] == filteredFoodType.value)
+                    .map((e) => e.data() as Map<String, dynamic>)
+                    .toList();
+              }
+            } else if (filteredLocation.value.isEmpty &&
+                filteredFoodType.value.isNotEmpty) {
+              filteredData = snapshotData
+                  .where((e) =>
+                      (e.data() as Map<String, dynamic>)['foodtype'] ==
+                      filteredFoodType.value)
+                  .map((e) => e.data() as Map<String, dynamic>)
+                  .toList();
+            }
+
+            return Column(
+              children: [
+                MyButtonLayout(
+                  filteredLocation: filteredLocation.value,
+                  filteredFoodType: filteredFoodType.value,
+                  onFilteredChange: (String location, String foodType) {
+                    filteredLocation.value = location;
+                    filteredFoodType.value = foodType;
+                  },
+                ),
+                const RandomButton(),
+                const SizedBox(
+                  height: 10,
+                ),
+                Visibility(
+                  visible: filteredData.isEmpty,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                            width: 250,
+                            height: 250,
+                            child: SvgPicture.asset('images/notfound23.svg')),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: filteredData.length,
+                    itemBuilder: (context, index) {
+                      var data = filteredData[index];
+
+                      return Column(
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () async {
+                              final user = FirebaseAuth.instance.currentUser;
+                              if (user != null) {
+                                final viewAt = Timestamp.now();
+                                final foodId = snapshots.data!.docs[index].id;
+                                final viewHistoryRef = FirebaseFirestore
+                                    .instance
+                                    .collection('ViewHistory');
+                                await viewHistoryRef.add({
+                                  'uid': user.uid,
+                                  'foodid': foodId,
+                                  'viewat': viewAt,
+                                });
+                              }
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => FoodDetail(
+                                    documentId: snapshots.data!.docs[index].id,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              width: 348,
+                              height: 100,
+                              margin: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Stack(
+                                children: [
+                                  Row(
+                                    //Food image
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 20, right: 20),
+                                        child: Image.network(
+                                          data['image'],
+                                          height: 75,
+                                          width: 100,
+                                          colorBlendMode: BlendMode.darken,
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
-                                    );
-                                  },
-                                  child: Container(
-                                    width: 348,
-                                    height: 100,
-                                    margin: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    child: Stack(
-                                      children: [
-                                        Row(
-                                          //Food image
+                                      //Food Name
+                                      Expanded(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 20, right: 20),
-                                              child: Image.network(
-                                                data['image'],
-                                                height: 75,
-                                                width: 100,
-                                                colorBlendMode:
-                                                    BlendMode.darken,
-                                                fit: BoxFit.cover,
+                                            Text(
+                                              data['name'],
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.black,
                                               ),
                                             ),
-                                            //Food Name
-                                            Expanded(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: <Widget>[
-                                                  Text(
-                                                    data['name'],
-                                                    style: const TextStyle(
-                                                      fontSize: 16,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  //Food Calories
-                                                  Text(
-                                                    'Calories: ${data['calories']}',
-                                                    style: const TextStyle(
-                                                      fontSize: 16,
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                ],
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            //Food Calories
+                                            Text(
+                                              'Calories: ${data['calories']}',
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.grey,
                                               ),
                                             ),
                                           ],
                                         ),
-                                        //Grey Box bottom right
-                                        const FavoriteButton(),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  );
+                                  //Grey Box bottom right
+                                  const FavoriteButton(),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
           }),
     );
   }
-
-  // void setState(Null Function() param0) {}
 }
 
 class SearchField extends StatefulWidget {
-  SearchField({super.key});
+  const SearchField({super.key});
 
   @override
   State<SearchField> createState() => _SearchFieldState();
@@ -193,7 +239,7 @@ class _SearchFieldState extends State<SearchField> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 45,
       child: TextField(
         readOnly: true,

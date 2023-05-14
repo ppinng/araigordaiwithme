@@ -367,7 +367,7 @@ class _UserPageState extends State<UserPage> {
                                     buttonText: const Text(
                                       "Select your Allergic food",
                                       style: TextStyle(
-                                        color: kBoxColor,
+                                        color: Colors.black54,
                                         fontSize: 20,
                                       ),
                                     ),
