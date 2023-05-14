@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:araigordaiwithme/constant.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../../components/Tag_button.dart';
 import '../../components/menu_bar.dart';
 import '../../components/random.dart';
@@ -112,7 +111,7 @@ class FoodList extends HookWidget {
                         SizedBox(
                             width: 250,
                             height: 250,
-                            child: SvgPicture.asset('images/notfound23.svg')),
+                            child: Image.asset("images/notfound.png")),
                       ],
                     ),
                   ),
