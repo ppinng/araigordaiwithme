@@ -163,16 +163,27 @@ class FoodList extends HookWidget {
                             onTap: () async {
                               final user = FirebaseAuth.instance.currentUser;
                               if (user != null) {
-                                final viewAt = Timestamp.now();
                                 final foodId = snapshots.data!.docs[index].id;
                                 final viewHistoryRef = FirebaseFirestore
                                     .instance
                                     .collection('ViewHistory');
-                                await viewHistoryRef.add({
-                                  'uid': user.uid,
-                                  'foodid': foodId,
-                                  'viewat': viewAt,
-                                });
+                                final querySnapshot = await viewHistoryRef
+                                    .where('uid', isEqualTo: user.uid)
+                                    .where('foodid', isEqualTo: foodId)
+                                    .get();
+                                if (querySnapshot.docs.isNotEmpty) {
+                                  final documentId = querySnapshot.docs[0].id;
+                                  await viewHistoryRef.doc(documentId).update({
+                                    'viewat': Timestamp.now(),
+                                  });
+                                } else {
+                                  final viewAt = Timestamp.now();
+                                  await viewHistoryRef.add({
+                                    'uid': user.uid,
+                                    'foodid': foodId,
+                                    'viewat': viewAt,
+                                  });
+                                }
                               }
                               Navigator.of(context).push(
                                 MaterialPageRoute(

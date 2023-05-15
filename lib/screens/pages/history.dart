@@ -111,6 +111,13 @@ class History extends HookWidget {
               child: CircularProgressIndicator(),
             );
           }
+
+          if (!viewHistorySnapshot.hasData) {
+            return Center(
+              child: Text('No view history found.'),
+            );
+          }
+
           final viewHistoryDocs = viewHistorySnapshot.data!.docs;
           final foodIds = viewHistoryDocs.map((doc) => doc['foodid']).toList();
 
@@ -141,12 +148,39 @@ class History extends HookWidget {
                             foodDocs.firstWhere((doc) => doc.id == foodId);
                         final foodData = foodDoc.data() as Map<String, dynamic>;
                         return GestureDetector(
-                          onTap: () {
+                          onTap: () async {
                             if (foodData != null) {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    FoodDetail(documentId: foodDoc.id),
-                              ));
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      FoodDetail(documentId: foodDoc.id),
+                                ),
+                              );
+
+                              final user = FirebaseAuth.instance.currentUser;
+                              if (user != null) {
+                                final foodId = foodDoc.id;
+                                final viewHistoryRef = FirebaseFirestore
+                                    .instance
+                                    .collection('ViewHistory');
+                                final querySnapshot = await viewHistoryRef
+                                    .where('uid', isEqualTo: user.uid)
+                                    .where('foodid', isEqualTo: foodId)
+                                    .get();
+                                if (querySnapshot.docs.isNotEmpty) {
+                                  final documentId = querySnapshot.docs[0].id;
+                                  await viewHistoryRef.doc(documentId).update({
+                                    'viewat': Timestamp.now(),
+                                  });
+                                } else {
+                                  final viewAt = Timestamp.now();
+                                  await viewHistoryRef.add({
+                                    'uid': user.uid,
+                                    'foodid': foodId,
+                                    'viewat': viewAt,
+                                  });
+                                }
+                              }
                             }
                           },
                           child: Container(
