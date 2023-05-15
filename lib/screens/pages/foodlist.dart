@@ -24,6 +24,8 @@ class FoodList extends HookWidget {
     final filteredLocation = useState('');
     final filteredFoodType = useState('');
 
+    final favoriteItems = useState<List<String>>([]);
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -156,6 +158,9 @@ class FoodList extends HookWidget {
                     itemCount: filteredData.length,
                     itemBuilder: (context, index) {
                       var data = filteredData[index];
+                      final foodId = snapshots.data!.docs[index].id;
+
+                      final isFavorite = favoriteItems.value.contains(foodId);
 
                       return Column(
                         children: <Widget>[
@@ -249,7 +254,83 @@ class FoodList extends HookWidget {
                                     ],
                                   ),
                                   //Grey Box bottom right
-                                  const FavoriteButton(),
+                                  // const FavoriteButton(),
+                                  Stack(
+                                    children: [
+                                      Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        child: Container(
+                                          width: 35,
+                                          height: 35,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[300],
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                              bottomRight: Radius.circular(15),
+                                            ),
+                                          ),
+                                          child: StreamBuilder<QuerySnapshot>(
+                                            stream: FirebaseFirestore.instance
+                                                .collection('Favorites')
+                                                .where('uid', isEqualTo: userId)
+                                                .where('foodid',
+                                                    isEqualTo: foodId)
+                                                .snapshots(),
+                                            builder: (context, snapshot) {
+                                              if (snapshot.hasData &&
+                                                  snapshot
+                                                      .data!.docs.isNotEmpty) {
+                                                // Item is in favorites
+                                                return IconButton(
+                                                  alignment: Alignment.center,
+                                                  icon: const Icon(
+                                                    Icons.favorite,
+                                                    size: 20,
+                                                    color: Colors.red,
+                                                  ),
+                                                  onPressed: () async {
+                                                    // Remove the item from favorites
+                                                    final docId = snapshot
+                                                        .data!.docs[0].id;
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection('Favorites')
+                                                        .doc(docId)
+                                                        .delete();
+                                                    print(
+                                                        'Removed from favorites');
+                                                  },
+                                                );
+                                              } else {
+                                                // Item is not in favorites
+                                                return IconButton(
+                                                  alignment: Alignment.center,
+                                                  icon: const Icon(
+                                                    Icons.favorite,
+                                                    size: 20,
+                                                    color: Colors.white,
+                                                  ),
+                                                  onPressed: () async {
+                                                    // Add the item to favorites
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection('Favorites')
+                                                        .add({
+                                                      'uid': userId,
+                                                      'foodid': foodId,
+                                                    });
+                                                    print('Added to favorites');
+                                                  },
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),
