@@ -1,10 +1,16 @@
 import 'package:araigordaiwithme/screens/pages/userpage.dart';
 import 'package:araigordaiwithme/screens/welcome_page/welcome_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:araigordaiwithme/constant.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../components/Tag_button.dart';
 import '../../components/menu_bar.dart';
+import 'detail.dart';
 
 class Menu {
   final String name;
@@ -21,49 +27,12 @@ class Menu {
       required this.location});
 }
 
-class History extends StatefulWidget {
-  const History({super.key});
-
-  @override
-  State<History> createState() => _HistoryState();
-}
-
-class _HistoryState extends State<History> {
-  final List<Menu> menus = [
-    Menu(
-        name: 'Spicy fried chicken with basil leaves',
-        image: 'images/krapao.png',
-        calories: 250,
-        price: 10.99,
-        location: 'New York'),
-    Menu(
-        name: 'Spicy Chicken Wings',
-        image: 'images/wingsaps.png',
-        calories: 350,
-        price: 14.99,
-        location: 'Los Angeles'),
-    Menu(
-        name: 'Grilled Chicken',
-        image: 'images/kaiyang.png',
-        calories: 450,
-        price: 19.99,
-        location: 'Chicago'),
-    Menu(
-        name: 'Chicken rice ',
-        image: 'images/kaowmungai.png',
-        calories: 550,
-        price: 24.99,
-        location: 'Houston'),
-    Menu(
-        name: 'Papaya Salad',
-        image: 'images/papayasalad.png',
-        calories: 650,
-        price: 29.99,
-        location: 'Miami'),
-  ];
-
-  // FoodList({super.key});
+class History extends HookWidget {
+  History({super.key});
   bool isFavorite = false;
+  final String assetName = 'images/notfound23.svg';
+  final firestore = FirebaseFirestore.instance;
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   Widget build(BuildContext context) {
@@ -88,86 +57,165 @@ class _HistoryState extends State<History> {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => UserPage()));
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const UserPage()));
             },
-            icon: Image.asset("images/forgot.png"),
+            icon: Container(
+              child: StreamBuilder<DocumentSnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('UsersInfo')
+                    .doc(userId)
+                    .snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<DocumentSnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return CircularProgressIndicator();
+                  }
+                  if (!snapshot.hasData || snapshot.data!.data() == null) {
+                    return CircularProgressIndicator();
+                  }
+                  final userImage = (snapshot.data!.data()
+                      as Map<String, dynamic>)['userimage'];
+                  if (userImage is String) {
+                    return CircleAvatar(
+                      backgroundColor: kBoxColor,
+                      foregroundImage: NetworkImage(userImage),
+                      child: const Icon(
+                        Icons.person,
+                        color: kButtonColor,
+                      ),
+                    );
+                  } else {
+                    return const CircleAvatar(
+                      backgroundColor: kBoxColor,
+                      foregroundImage: AssetImage("images/user.jpg"),
+                    );
+                  }
+                },
+              ),
+            ),
           ),
         ],
       ),
       drawer: const DrawerBar(),
       backgroundColor: kBackgroundColor,
-      body: ListView.builder(
-              itemCount: menus.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Column(
-                  children: <Widget>[
-                    Container(
-                      width: 348,
-                      height: 100,
-                      margin: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Stack(
-                        children: [
-                          Row(
-                            //Food image
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 20, right: 20),
-                                child: Image.asset(
-                                  menus[index].image,
-                                  height: 75,
-                                  width: 100,
-                                  colorBlendMode: BlendMode.darken,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              //Food Name
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      menus[index].name,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.black,
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('ViewHistory')
+            .where('uid', isEqualTo: userId)
+            .orderBy('viewat', descending: true)
+            .snapshots(),
+        builder: (context, viewHistorySnapshot) {
+          if (viewHistorySnapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final viewHistoryDocs = viewHistorySnapshot.data!.docs;
+          final foodIds = viewHistoryDocs.map((doc) => doc['foodid']).toList();
+
+          return StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('Food')
+                .where(FieldPath.documentId)
+                .snapshots(),
+            builder: (context, foodSnapshot) {
+              if (foodSnapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              final foodDocs = foodSnapshot.data!.docs;
+
+              return Column(
+                children: [
+                  const SizedBox(height: 10),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: viewHistoryDocs.length,
+                      itemBuilder: (context, index) {
+                        final viewHistoryData = viewHistoryDocs[index].data()
+                            as Map<String, dynamic>;
+                        final foodId = viewHistoryData['foodid'];
+                        final foodDoc =
+                            foodDocs.firstWhere((doc) => doc.id == foodId);
+                        final foodData = foodDoc.data() as Map<String, dynamic>;
+                        return GestureDetector(
+                          onTap: () {
+                            if (foodData != null) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    FoodDetail(documentId: foodDoc.id),
+                              ));
+                            }
+                          },
+                          child: Container(
+                            width: 348,
+                            height: 100,
+                            margin: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Stack(
+                              children: [
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 20, right: 20),
+                                      child: Image.network(
+                                        foodData['image'],
+                                        height: 75,
+                                        width: 100,
+                                        colorBlendMode: BlendMode.darken,
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    //Food Calories
-                                    Text(
-                                      'Calories: ${menus[index].calories}',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.grey,
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            foodData['name'],
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 5),
+                                          Text(
+                                            'Calories: ${foodData['calories']}',
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
+                                const FavoriteButton(),
+                              ],
+                            ),
                           ),
-                          //Grey Box bottom right
-                          const FavoriteButton(),
-                        ],
-                      ),
+                        );
+                      },
                     ),
-                  ],
-                );
-              },
-            ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
-
 
 //favorite heart in grey box
 class FavoriteButton extends StatefulWidget {
