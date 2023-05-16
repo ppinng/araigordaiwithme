@@ -213,11 +213,11 @@ class _UserPageState extends State<UserPage> {
                             }
                             switch (snapshot.connectionState) {
                               case ConnectionState.waiting:
-                                return CircularProgressIndicator();
+                                return const CircularProgressIndicator();
                               default:
                                 if (!snapshot.hasData ||
                                     snapshot.data!.data() == null) {
-                                  return Text('User not found');
+                                  return const Text('User not found');
                                 }
                                 final userImage = (snapshot.data!.data()
                                     as Map<String, dynamic>)['userimage'];
