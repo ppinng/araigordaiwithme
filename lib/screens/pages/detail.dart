@@ -1,5 +1,6 @@
 import 'package:araigordaiwithme/screens/pages/search.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -8,9 +9,62 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../constant.dart';
 
 class FoodDetail extends StatelessWidget {
-  const FoodDetail({required this.documentId});
-
+  FoodDetail({required this.documentId});
+  bool isFavorite = false;
+  final String assetName = 'images/notfound23.svg';
+  final firestore = FirebaseFirestore.instance;
+  final userId = FirebaseAuth.instance.currentUser!.uid;
   final String documentId;
+
+  Widget buildFavoriteButton(String foodId) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('Favorites')
+          .where('uid', isEqualTo: userId)
+          .where('foodid', isEqualTo: foodId)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+          // Item is in favorites
+          return IconButton(
+            alignment: Alignment.center,
+            icon: const Icon(
+              Icons.favorite,
+              size: 30,
+              color: Colors.red,
+            ),
+            onPressed: () async {
+              // Remove the item from favorites
+              final docId = snapshot.data!.docs[0].id;
+              await FirebaseFirestore.instance
+                  .collection('Favorites')
+                  .doc(docId)
+                  .delete();
+              print('Removed from favorites');
+            },
+          );
+        } else {
+          // Item is not in favorites
+          return IconButton(
+            alignment: Alignment.center,
+            icon: const Icon(
+              Icons.favorite_outline,
+              size: 30,
+              color: Colors.grey,
+            ),
+            onPressed: () async {
+              // Add the item to favorites
+              await FirebaseFirestore.instance.collection('Favorites').add({
+                'uid': userId,
+                'foodid': foodId,
+              });
+              print('Added to favorites');
+            },
+          );
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +96,8 @@ class FoodDetail extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.done) {
               Map<String, dynamic> data =
                   snapshot.data!.data() as Map<String, dynamic>;
+              String foodId =
+                  snapshot.data!.id; // Obtaining foodId from the snapshot
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,10 +118,18 @@ class FoodDetail extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       color: kBackgroundColor,
-                      child: Text(
-                        "${data['name']}",
-                        style: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.w700),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              "${data['name']}",
+                              style: const TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          buildFavoriteButton(foodId),
+                        ],
                       ),
                     ),
                   ),
