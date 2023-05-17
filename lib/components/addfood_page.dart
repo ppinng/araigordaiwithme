@@ -13,7 +13,6 @@ class _AddFoodState extends State<AddFood> {
   final _firestore = FirebaseFirestore.instance;
   late String calories;
   String canteen = '';
-  bool favorite = false;
   String foodid = '';
   String cuisine = '';
   String image = '';
@@ -31,7 +30,6 @@ class _AddFoodState extends State<AddFood> {
       newDocRef.set({
         'calories': calories,
         'canteen': canteen,
-        'favorite': favorite,
         'foodid': foodid,
         'cuisine': cuisine,
         'image': image,
