@@ -18,7 +18,7 @@ class _AddFoodState extends State<AddFood> {
   String foodtype = '';
   String image = '';
   String name = '';
-  String store = '';
+  String stall= '';
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
@@ -36,7 +36,7 @@ class _AddFoodState extends State<AddFood> {
         'foodtype': foodtype,
         'image': image,
         'name': name,
-        'store': store,
+        'stall': stall,
       }).then((_) {
         // Document successfully added to Firestore
         ScaffoldMessenger.of(context).showSnackBar(
@@ -87,7 +87,7 @@ class _AddFoodState extends State<AddFood> {
               ),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Store (String)'),
-                onSaved: (value) => store = value!,
+                onSaved: (value) => stall = value!,
               ),
               ElevatedButton(
                 onPressed: _submitForm,
