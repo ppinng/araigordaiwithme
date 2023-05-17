@@ -18,7 +18,7 @@ class _AddFoodState extends State<AddFood> {
   String foodtype = '';
   String image = '';
   String name = '';
-  String stall= '';
+  String stall = '';
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
@@ -86,7 +86,7 @@ class _AddFoodState extends State<AddFood> {
                 onSaved: (value) => name = value!,
               ),
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Store (String)'),
+                decoration: const InputDecoration(labelText: 'Stall (String)'),
                 onSaved: (value) => stall = value!,
               ),
               ElevatedButton(
