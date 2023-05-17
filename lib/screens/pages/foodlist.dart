@@ -97,30 +97,17 @@ class FoodList extends HookWidget {
               filteredData = snapshotData
                   .map((e) => e.data() as Map<String, dynamic>)
                   .toList();
-            } else if (filteredLocation.value.isNotEmpty) {
+            } else {
               filteredData = snapshotData
-                  .where((e) =>
-                      (e.data() as Map<String, dynamic>)['canteen'] ==
-                      filteredLocation.value)
-                  .map((e) => e.data() as Map<String, dynamic>)
-                  .toList();
-              if (filteredCuisine.value.isEmpty) {
-                filteredData = filteredData;
-              } else {
-                filteredData = snapshotData
-                    .where((e) =>
-                        (e.data() as Map<String, dynamic>)['canteen'] ==
-                            filteredLocation.value &&
-                        e['cuisine'] == filteredCuisine.value)
-                    .map((e) => e.data() as Map<String, dynamic>)
-                    .toList();
-              }
-            } else if (filteredLocation.value.isEmpty &&
-                filteredCuisine.value.isNotEmpty) {
-              filteredData = snapshotData
-                  .where((e) =>
-                      (e.data() as Map<String, dynamic>)['cuisine'] ==
-                      filteredCuisine.value)
+                  .where((e) {
+                    final data = e.data() as Map<String, dynamic>;
+                    final canteen = data['canteen'];
+                    final cuisine = data['cuisine'];
+                    return (filteredLocation.value.isEmpty ||
+                            canteen == filteredLocation.value) &&
+                        (filteredCuisine.value.isEmpty ||
+                            cuisine == filteredCuisine.value);
+                  })
                   .map((e) => e.data() as Map<String, dynamic>)
                   .toList();
             }
@@ -158,10 +145,10 @@ class FoodList extends HookWidget {
                     itemCount: filteredData.length,
                     itemBuilder: (context, index) {
                       var data = filteredData[index];
+                      final foodData = filteredData[
+                          index]; // Get the correct item from filteredData
                       final foodId = snapshots.data!.docs[index].id;
-
                       final isFavorite = favoriteItems.value.contains(foodId);
-
                       return Column(
                         children: <Widget>[
                           GestureDetector(
@@ -193,7 +180,7 @@ class FoodList extends HookWidget {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => FoodDetail(
-                                    documentId: snapshots.data!.docs[index].id,
+                                    documentId: foodData['foodid'],
                                   ),
                                 ),
                               );

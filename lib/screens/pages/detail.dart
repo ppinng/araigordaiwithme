@@ -102,15 +102,22 @@ class FoodDetail extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(
-                    child: Container(
-                      margin: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15)),
-                      child: Image.network(
-                        data['image'],
-                        width: 300,
-                        height: 300,
+                  Container(
+                    decoration: BoxDecoration(
+                      color: kBoxColor,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Center(
+                      child: Container(
+                        margin: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Image.network(
+                          data['image'],
+                          width: 300,
+                          height: 300,
+                        ),
                       ),
                     ),
                   ),
@@ -140,31 +147,47 @@ class FoodDetail extends StatelessWidget {
                     child: Column(
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.location_on,
-                                  color: Colors.blue,
+                            Expanded(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.location_on,
+                                      color: Colors.blue,
+                                    ),
+                                    Text(
+                                      "${data['canteen']}",
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  "${data['canteen']}",
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              ],
+                              ),
                             ),
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.store_mall_directory,
-                                  color: kButtonColor,
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.store_mall_directory,
+                                      color: kButtonColor,
+                                    ),
+                                    Text(
+                                      "${data['stall']}",
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  "${data['stall']}",
-                                  style: const TextStyle(fontSize: 16),
-                                ),
-                              ],
+                              ),
                             ),
                           ],
                         ),
