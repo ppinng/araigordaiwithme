@@ -47,26 +47,25 @@ class MyButtonLayout extends HookWidget {
     Key? key,
     required this.onFilteredChange,
     required this.filteredLocation,
-    required this.filteredFoodType,
+    required this.filteredCuisine,
   }) : super(key: key);
-  final void Function(String location, String foodType) onFilteredChange;
+  final void Function(String location, String cuisine) onFilteredChange;
   final String filteredLocation;
-  final String filteredFoodType;
+  final String filteredCuisine;
   @override
   Widget build(BuildContext context) {
     final selectedLocation = useState<String>(filteredLocation);
-    final selectedFoodType = useState<String>(filteredFoodType);
+    final selectedCuisine = useState<String>(filteredCuisine);
 
     void onLocationPressed(String location) {
       selectedLocation.value =
           location == selectedLocation.value ? '' : location;
-      onFilteredChange(selectedLocation.value, selectedFoodType.value);
+      onFilteredChange(selectedLocation.value, selectedCuisine.value);
     }
 
-    void onFoodTypePressed(String foodType) {
-      selectedFoodType.value =
-          foodType == selectedFoodType.value ? '' : foodType;
-      onFilteredChange(selectedLocation.value, selectedFoodType.value);
+    void onFoodTypePressed(String cuisine) {
+      selectedCuisine.value = cuisine == selectedCuisine.value ? '' : cuisine;
+      onFilteredChange(selectedLocation.value, selectedCuisine.value);
     }
 
     return Column(
@@ -135,7 +134,7 @@ class MyButtonLayout extends HookWidget {
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'Food Type',
+              'Cuisine',
               style: TextStyle(
                 fontSize: 22.0,
                 fontWeight: FontWeight.bold,
@@ -152,46 +151,55 @@ class MyButtonLayout extends HookWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ToggleColorButton(
-                      text: 'Chicken',
-                      isPressed: selectedFoodType.value == 'chicken',
+                      text: 'Fry',
+                      isPressed: selectedCuisine.value == 'fry',
                       onPressed: () {
-                        onFoodTypePressed('chicken');
+                        onFoodTypePressed('fry');
                       }),
                   const SizedBox(
                     width: 20,
                   ),
                   ToggleColorButton(
-                      text: 'Fish',
-                      isPressed: selectedFoodType.value == 'fish',
+                      text: 'Curry',
+                      isPressed: selectedCuisine.value == 'curry',
                       onPressed: () {
-                        onFoodTypePressed('fish');
+                        onFoodTypePressed('curry');
                       }),
                   const SizedBox(
                     width: 20,
                   ),
                   ToggleColorButton(
-                      text: 'Meat',
-                      isPressed: selectedFoodType.value == 'meat',
+                      text: 'Boil',
+                      isPressed: selectedCuisine.value == 'boil',
                       onPressed: () {
-                        onFoodTypePressed('meat');
+                        onFoodTypePressed('boil');
                       }),
                   const SizedBox(
                     width: 20,
                   ),
                   ToggleColorButton(
-                      text: 'Pork',
-                      isPressed: selectedFoodType.value == 'pork',
+                      text: 'Stir',
+                      isPressed: selectedCuisine.value == 'stir',
                       onPressed: () {
-                        onFoodTypePressed('pork');
+                        onFoodTypePressed('stir');
                       }),
                   const SizedBox(
                     width: 20,
                   ),
                   ToggleColorButton(
-                      text: 'Shrimp',
-                      isPressed: selectedFoodType.value == 'shrimp',
+                      text: 'Bake',
+                      isPressed: selectedCuisine.value == 'bake',
                       onPressed: () {
-                        onFoodTypePressed('shrimp');
+                        onFoodTypePressed('bake');
+                      }),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  ToggleColorButton(
+                      text: 'Grill ',
+                      isPressed: selectedCuisine.value == 'grill',
+                      onPressed: () {
+                        onFoodTypePressed('grill');
                       }),
                   const SizedBox(
                     width: 20,

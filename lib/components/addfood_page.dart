@@ -11,11 +11,11 @@ class AddFood extends StatefulWidget {
 class _AddFoodState extends State<AddFood> {
   final _formKey = GlobalKey<FormState>();
   final _firestore = FirebaseFirestore.instance;
-  late int calories;
+  late String calories;
   String canteen = '';
   bool favorite = false;
   String foodid = '';
-  String foodtype = '';
+  String cuisine = '';
   String image = '';
   String name = '';
   String stall = '';
@@ -33,7 +33,7 @@ class _AddFoodState extends State<AddFood> {
         'canteen': canteen,
         'favorite': favorite,
         'foodid': foodid,
-        'foodtype': foodtype,
+        'cuisine': cuisine,
         'image': image,
         'name': name,
         'stall': stall,
@@ -63,9 +63,10 @@ class _AddFoodState extends State<AddFood> {
           child: Column(
             children: [
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Calories (int)'),
+                decoration:
+                    const InputDecoration(labelText: 'Calories (String)'),
                 keyboardType: TextInputType.number,
-                onSaved: (value) => calories = int.parse(value!),
+                onSaved: (value) => calories = value!,
               ),
               TextFormField(
                 decoration:
@@ -73,9 +74,9 @@ class _AddFoodState extends State<AddFood> {
                 onSaved: (value) => canteen = value!,
               ),
               TextFormField(
-                decoration:
-                    const InputDecoration(labelText: 'Food Type (String)'),
-                onSaved: (value) => foodtype = value!,
+                decoration: const InputDecoration(
+                    labelText: 'Cuisine (String) lower case'),
+                onSaved: (value) => cuisine = value!,
               ),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Image (Link)'),

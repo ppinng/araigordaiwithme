@@ -22,7 +22,7 @@ class FoodList extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final filteredLocation = useState('');
-    final filteredFoodType = useState('');
+    final filteredCuisine = useState('');
 
     final favoriteItems = useState<List<String>>([]);
 
@@ -51,10 +51,10 @@ class FoodList extends HookWidget {
                 builder: (BuildContext context,
                     AsyncSnapshot<DocumentSnapshot> snapshot) {
                   if (snapshot.hasError) {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   }
                   if (!snapshot.hasData || snapshot.data!.data() == null) {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   }
                   final userImage = (snapshot.data!.data()
                       as Map<String, dynamic>)['userimage'];
@@ -93,7 +93,7 @@ class FoodList extends HookWidget {
             final snapshotData = snapshots.data!.docs;
             List<Map<String, dynamic>> filteredData = [];
             if (filteredLocation.value.isEmpty &&
-                filteredFoodType.value.isEmpty) {
+                filteredCuisine.value.isEmpty) {
               filteredData = snapshotData
                   .map((e) => e.data() as Map<String, dynamic>)
                   .toList();
@@ -104,23 +104,23 @@ class FoodList extends HookWidget {
                       filteredLocation.value)
                   .map((e) => e.data() as Map<String, dynamic>)
                   .toList();
-              if (filteredFoodType.value.isEmpty) {
+              if (filteredCuisine.value.isEmpty) {
                 filteredData = filteredData;
               } else {
                 filteredData = snapshotData
                     .where((e) =>
                         (e.data() as Map<String, dynamic>)['canteen'] ==
                             filteredLocation.value &&
-                        e['foodtype'] == filteredFoodType.value)
+                        e['cuisine'] == filteredCuisine.value)
                     .map((e) => e.data() as Map<String, dynamic>)
                     .toList();
               }
             } else if (filteredLocation.value.isEmpty &&
-                filteredFoodType.value.isNotEmpty) {
+                filteredCuisine.value.isNotEmpty) {
               filteredData = snapshotData
                   .where((e) =>
-                      (e.data() as Map<String, dynamic>)['foodtype'] ==
-                      filteredFoodType.value)
+                      (e.data() as Map<String, dynamic>)['cuisine'] ==
+                      filteredCuisine.value)
                   .map((e) => e.data() as Map<String, dynamic>)
                   .toList();
             }
@@ -129,10 +129,10 @@ class FoodList extends HookWidget {
               children: [
                 MyButtonLayout(
                   filteredLocation: filteredLocation.value,
-                  filteredFoodType: filteredFoodType.value,
-                  onFilteredChange: (String location, String foodType) {
+                  filteredCuisine: filteredCuisine.value,
+                  onFilteredChange: (String location, String cuisine) {
                     filteredLocation.value = location;
-                    filteredFoodType.value = foodType;
+                    filteredCuisine.value = cuisine;
                   },
                 ),
                 const RandomButton(),

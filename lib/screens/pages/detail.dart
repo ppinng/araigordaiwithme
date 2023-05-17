@@ -9,7 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../constant.dart';
 
 class FoodDetail extends StatelessWidget {
-  FoodDetail({required this.documentId});
+  FoodDetail({super.key, required this.documentId});
   bool isFavorite = false;
   final String assetName = 'images/notfound23.svg';
   final firestore = FirebaseFirestore.instance;
@@ -161,7 +161,7 @@ class FoodDetail extends StatelessWidget {
                                   color: kButtonColor,
                                 ),
                                 Text(
-                                  "${data['store']}",
+                                  "${data['stall']}",
                                   style: const TextStyle(fontSize: 16),
                                 ),
                               ],
