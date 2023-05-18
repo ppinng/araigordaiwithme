@@ -93,32 +93,46 @@ class _UserPageState extends State<UserPage> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
 
   Future uploadFile() async {
-    final path = 'images/${pickedFile!.name}_$userId';
-    final file = File(pickedFile!.path!);
+    if (pickedFile == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: SizedBox(
+            height: 25,
+            child: Text(
+              'No image selected',
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+        ),
+      );
+    } else {
+      final path = 'images/${pickedFile!.name}_$userId';
+      final file = File(pickedFile!.path!);
 
-    final ref = FirebaseStorage.instance.ref().child(path);
-    uploadTask = ref.putFile(file);
+      final ref = FirebaseStorage.instance.ref().child(path);
+      uploadTask = ref.putFile(file);
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return const AlertDialog(
-              backgroundColor: kUserPageFieldColor,
-              title: Text("Uploading Image"),
-              content: SizedBox(
-                width: 140,
-                height: 100,
-                child: Center(
-                  child: CircularProgressIndicator(),
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return const AlertDialog(
+                backgroundColor: kUserPageFieldColor,
+                title: Text("Uploading Image"),
+                content: SizedBox(
+                  width: 140,
+                  height: 100,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 ),
-              ),
-            );
-          },
-        );
-      },
-    );
+              );
+            },
+          );
+        },
+      );
+    }
 
     await uploadTask!.whenComplete(() {
       Navigator.pop(context); // Close the dialog
@@ -367,6 +381,7 @@ class _UserPageState extends State<UserPage> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
                             child: TextFormField(
+                              enabled: false,
                               controller: email,
                               //initialValue: userData.email,
                               decoration: InputDecoration(
@@ -381,7 +396,6 @@ class _UserPageState extends State<UserPage> {
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.always,
                                 labelText: "Email",
-                                suffixIcon: const Icon(Icons.edit),
                                 suffixIconColor: kBoxColor,
                               ),
                               style: const TextStyle(color: kBoxColor),
@@ -481,51 +495,51 @@ class _UserPageState extends State<UserPage> {
                                     color: kUserPageFieldColor,
                                     borderRadius: BorderRadius.circular(15.0),
                                   ),
-                                  child: MultiSelectDialogField(
-                                    dialogWidth: 10,
-                                    title: const Text("Allergic food"),
-                                    decoration: BoxDecoration(
-                                      color: kUserPageFieldColor,
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      border: Border.all(
-                                        color: kUserPageFieldColor,
-                                        width: 2,
-                                      ),
-                                    ),
-                                    selectedColor: kButtonColor,
-                                    selectedItemsTextStyle: const TextStyle(
-                                        color: kDefaultIconLightColor),
-                                    buttonText: const Text(
-                                      "Select your Allergic food",
-                                      style: TextStyle(
-                                        color: Colors.black54,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                    buttonIcon: const Icon(
-                                      Icons.keyboard_arrow_down_outlined,
-                                      color: kBoxColor,
-                                    ),
-                                    listType: MultiSelectListType.CHIP,
-                                    unselectedColor: kBackgroundColor,
-                                    backgroundColor: kUserPageFieldColor,
-                                    items: _items,
-                                    onConfirm: (val) {
-                                      _selectedFoods = val;
-                                    },
-                                    initialValue: _selectedFoods,
-                                    chipDisplay: MultiSelectChipDisplay(
-                                      items: _selectedFoods
-                                          .map(
-                                              (e) => MultiSelectItem(e, e.name))
-                                          .toList(),
-                                      onTap: (value) {
-                                        setState(() {
-                                          _selectedFoods.remove(value);
-                                        });
-                                      },
-                                    ),
-                                  ),
+                                  // child: MultiSelectDialogField(
+                                  //   dialogWidth: 10,
+                                  //   title: const Text("Allergic food"),
+                                  //   decoration: BoxDecoration(
+                                  //     color: kUserPageFieldColor,
+                                  //     borderRadius: BorderRadius.circular(15.0),
+                                  //     border: Border.all(
+                                  //       color: kUserPageFieldColor,
+                                  //       width: 2,
+                                  //     ),
+                                  //   ),
+                                  //   selectedColor: kButtonColor,
+                                  //   selectedItemsTextStyle: const TextStyle(
+                                  //       color: kDefaultIconLightColor),
+                                  //   buttonText: const Text(
+                                  //     "Select your Allergic food",
+                                  //     style: TextStyle(
+                                  //       color: Colors.black54,
+                                  //       fontSize: 20,
+                                  //     ),
+                                  //   ),
+                                  //   buttonIcon: const Icon(
+                                  //     Icons.keyboard_arrow_down_outlined,
+                                  //     color: kBoxColor,
+                                  //   ),
+                                  //   listType: MultiSelectListType.CHIP,
+                                  //   unselectedColor: kBackgroundColor,
+                                  //   backgroundColor: kUserPageFieldColor,
+                                  //   items: _items,
+                                  //   onConfirm: (val) {
+                                  //     _selectedFoods = val;
+                                  //   },
+                                  //   initialValue: _selectedFoods,
+                                  //   chipDisplay: MultiSelectChipDisplay(
+                                  //     items: _selectedFoods
+                                  //         .map(
+                                  //             (e) => MultiSelectItem(e, e.name))
+                                  //         .toList(),
+                                  //     onTap: (value) {
+                                  //       setState(() {
+                                  //         _selectedFoods.remove(value);
+                                  //       });
+                                  //     },
+                                  //   ),
+                                  // ),
                                 ),
                               ],
                             ), //Widget

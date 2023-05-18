@@ -27,15 +27,6 @@ class MoreInfo extends StatefulWidget {
 
 class _MoreInfoState extends State<MoreInfo> {
   static final List<Food> _foods = [
-    Food(id: 1, name: "Egg"),
-    Food(id: 2, name: "Fish"),
-    Food(id: 3, name: "Pork"),
-    Food(id: 4, name: "Beef"),
-    Food(id: 5, name: "Shrimp"),
-    Food(id: 6, name: "Crab"),
-    Food(id: 7, name: "Squid"),
-    Food(id: 8, name: "Nuts"),
-    Food(id: 9, name: "Wheat"),
   ];
   final _items =
       _foods.map((food) => MultiSelectItem<Food>(food, food.name)).toList();
@@ -158,11 +149,11 @@ class _MoreInfoState extends State<MoreInfo> {
                     style: const TextStyle(color: Colors.black),
                   ),
                 ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: multiSelect(), //Widget
-                ),
+                // Padding(
+                //   padding:
+                //       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                //   child: multiSelect(), //Widget
+                // ),
                 const SizedBox(
                   height: 20,
                 ),

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:araigordaiwithme/models/model_userinfo.dart';
 import 'package:araigordaiwithme/screens/pages/detail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,6 @@ class _RandomButtonState extends State<RandomButton> {
 
           if (data != null) {
             // Process the data as needed
-            print(data);
 
             // ignore: use_build_context_synchronously
             showDialog(
@@ -129,10 +129,11 @@ class _RandomButtonState extends State<RandomButton> {
                                           ),
                                         );
                                         viewHistoryCollection.add({
-                                          'uid': 'your_user_id_here',
+                                          'uid': users?.uid,
                                           'foodid': randomDocument.id,
                                           'viewat': DateTime.now().toString(),
                                         });
+                                        print(randomDocument.id);
                                       },
                                       child: const Text('Detail')),
                                 )
@@ -155,7 +156,7 @@ class _RandomButtonState extends State<RandomButton> {
       }
     }
 
-    return Container(
+    return SizedBox(
       height: 65, // Adjust the height as needed
       child: Padding(
         padding: const EdgeInsets.only(left: 25, top: 20),

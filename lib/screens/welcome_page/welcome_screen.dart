@@ -4,7 +4,7 @@ import 'package:araigordaiwithme/constant.dart';
 //import screens
 import 'package:araigordaiwithme/screens/register_page/register_page.dart';
 import 'package:araigordaiwithme/screens/login_page/login_page.dart';
-import 'package:araigordaiwithme/components/addfood_page.dart';
+// import 'package:araigordaiwithme/components/addfood_page.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -77,26 +77,26 @@ class WelcomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
-              width: 180,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: kButtonColor,
-                    shadowColor: Colors.black,
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10))),
-                child: const Text(
-                  'Add food',
-                  style: TextStyle(fontSize: 20),
-                ),
-                onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const AddFood()));
-                },
-              ),
-            ),
+            // SizedBox(
+            //   width: 180,
+            //   child: ElevatedButton(
+            //     style: ElevatedButton.styleFrom(
+            //         foregroundColor: Colors.white,
+            //         backgroundColor: kButtonColor,
+            //         shadowColor: Colors.black,
+            //         elevation: 5,
+            //         shape: RoundedRectangleBorder(
+            //             borderRadius: BorderRadius.circular(10))),
+            //     child: const Text(
+            //       'Add food',
+            //       style: TextStyle(fontSize: 20),
+            //     ),
+            //     onPressed: () {
+            //       Navigator.of(context).push(
+            //           MaterialPageRoute(builder: (context) => const AddFood()));
+            //     },
+            //   ),
+            // ),
           ],
         ));
   }

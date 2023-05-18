@@ -155,7 +155,7 @@ class FoodList extends HookWidget {
                             onTap: () async {
                               final user = FirebaseAuth.instance.currentUser;
                               if (user != null) {
-                                final foodId = snapshots.data!.docs[index].id;
+                                final foodId = foodData['foodid'];
                                 final viewHistoryRef = FirebaseFirestore
                                     .instance
                                     .collection('ViewHistory');
