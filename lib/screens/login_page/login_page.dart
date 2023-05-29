@@ -1,11 +1,11 @@
 import 'package:araigordaiwithme/constant.dart';
 import 'package:araigordaiwithme/screens/more_info_page/more_info.dart';
 import 'package:araigordaiwithme/screens/register_page/register_page.dart';
-import 'package:araigordaiwithme/services/firebase_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../Home_page/home_page.dart';
 import '../forgotpassword_page/forgot_page.dart';
 
@@ -27,6 +27,39 @@ class LoginScreen extends HookWidget {
       final User user = result.user!;
 
       return user;
+    }
+
+    Future googleSignIn() async {
+      try {
+        final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser!.authentication;
+        final OAuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        UserCredential user = await auth.signInWithCredential(credential);
+        if (user.additionalUserInfo!.isNewUser) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MoreInfo()),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        }
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'account-exists-with-different-credential') {
+          print('The account already exists with a different credential.');
+        } else if (e.code == 'invalid-credential') {
+          print('Error occurred while accessing credentials. Try again.');
+        }
+      } catch (e) {
+        print(e);
+      }
     }
 
     return Scaffold(
@@ -294,11 +327,7 @@ class LoginScreen extends HookWidget {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10))),
                             onPressed: () async {
-                              await FirebaseServices().signInWithGoogle();
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const MoreInfo()));
+                              googleSignIn();
                             },
                             child: Row(
                               children: [

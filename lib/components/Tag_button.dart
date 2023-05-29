@@ -6,12 +6,14 @@ class ToggleColorButton extends HookWidget {
   final String text;
   final bool isPressed;
   final void Function() onPressed;
+  final double fontSize;
 
   const ToggleColorButton({
     Key? key,
     required this.text,
     required this.isPressed,
     required this.onPressed,
+    this.fontSize = 18,
   }) : super(key: key);
 
   @override
@@ -35,7 +37,7 @@ class ToggleColorButton extends HookWidget {
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
         child: Text(
           text,
-          style: const TextStyle(fontSize: 18),
+          style: TextStyle(fontSize: fontSize),
         ),
       ),
     );
@@ -71,12 +73,8 @@ class MyButtonLayout extends HookWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(
-          height: 21,
-        ),
-
         const Padding(
-          padding: EdgeInsets.only(left: 25),
+          padding: EdgeInsets.fromLTRB(25, 10, 0, 0),
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
@@ -88,47 +86,50 @@ class MyButtonLayout extends HookWidget {
             ),
           ),
         ),
-        // SizedBox(height: 15),
-
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(25, 10, 20, 10),
+            padding: const EdgeInsets.fromLTRB(25, 10, 0, 10),
             child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ToggleColorButton(
-                    text: 'KFC',
-                    isPressed: selectedLocation.value == 'KFC',
-                    onPressed: () {
-                      onLocationPressed('KFC');
-                    },
-                  ),
-                  const SizedBox(
-                    width: 29,
-                  ),
-                  ToggleColorButton(
-                      text: 'Female Dorm',
-                      isPressed: selectedLocation.value == 'Female Dorm',
-                      onPressed: () {
-                        onLocationPressed('Female Dorm');
-                      }),
-                  const SizedBox(
-                    width: 29,
-                  ),
-                  ToggleColorButton(
-                      text: 'Male Dorm',
-                      isPressed: selectedLocation.value == 'Male Dorm',
-                      onPressed: () {
-                        onLocationPressed('Male Dorm');
-                      }),
-                  const SizedBox(
-                    width: 29,
-                  ),
-                ]),
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ToggleColorButton(
+                  text: 'KFC',
+                  isPressed: selectedLocation.value == 'KFC',
+                  onPressed: () {
+                    onLocationPressed('KFC');
+                  },
+                  fontSize: 16,
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                ToggleColorButton(
+                  text: 'Female Dorm',
+                  isPressed: selectedLocation.value == 'Female Dorm',
+                  onPressed: () {
+                    onLocationPressed('Female Dorm');
+                  },
+                  fontSize: 16,
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                ToggleColorButton(
+                  text: 'Male Dorm',
+                  isPressed: selectedLocation.value == 'Male Dorm',
+                  onPressed: () {
+                    onLocationPressed('Male Dorm');
+                  },
+                  fontSize: 16,
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+              ],
+            ),
           ),
         ),
-
         const Padding(
           padding: EdgeInsets.only(left: 25),
           child: Align(
@@ -142,7 +143,6 @@ class MyButtonLayout extends HookWidget {
             ),
           ),
         ),
-
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Padding(
