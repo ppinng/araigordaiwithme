@@ -53,12 +53,25 @@ class LoginScreen extends HookWidget {
         }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
-          print('The account already exists with a different credential.');
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              backgroundColor: kButtonColor,
+              content: Text(
+                  'The account already exists with a different credential.')));
         } else if (e.code == 'invalid-credential') {
-          print('Error occurred while accessing credentials. Try again.');
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              backgroundColor: kButtonColor,
+              content: Text(
+                  'Error occurred while accessing credentials. Try again.')));
+        } else if (e.code == GoogleSignIn.kNetworkError) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              backgroundColor: kButtonColor,
+              content: Text(
+                  'A network error (such as timeout, interrupted connection or unreachable host) has occurred.')));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              backgroundColor: kButtonColor,
+              content: Text('Something went wrong.')));
         }
-      } catch (e) {
-        print(e);
       }
     }
 
@@ -251,36 +264,10 @@ class LoginScreen extends HookWidget {
                     ],
                   ),
                 ),
-
                 Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Padding(
-                      //   padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                      //   child: RichText(
-                      //     text: TextSpan(
-                      //       children: <TextSpan>[
-                      //         const TextSpan(
-                      //             text: "Don't have an account? ",
-                      //             style: TextStyle(
-                      //                 fontSize: 15, color: Colors.black)),
-                      //         TextSpan(
-                      //             text: 'Create one',
-                      //             style: const TextStyle(
-                      //                 fontSize: 16, color: kButtonColor),
-                      //             recognizer: TapGestureRecognizer()
-                      //               ..onTap = () {
-                      //                 Navigator.of(context).push(
-                      //                     MaterialPageRoute(
-                      //                         builder: (context) =>
-                      //                             const SignupScreen()));
-                      //               })
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -346,34 +333,6 @@ class LoginScreen extends HookWidget {
                     ],
                   ),
                 ),
-
-                // Center(
-                //   child: Padding(
-                //     padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                //     child: RichText(
-                //       text: TextSpan(
-                //         children: <TextSpan>[
-                //           const TextSpan(
-                //               text: "Don't have an account? ",
-                //               style: TextStyle(
-                //                   fontSize: 15, color: Colors.black)),
-                //           TextSpan(
-                //               text: 'Create one',
-                //               style: const TextStyle(
-                //                   fontSize: 16, color: kButtonColor),
-                //               recognizer: TapGestureRecognizer()
-                //                 ..onTap = () {
-                //                   Navigator.of(context).push(
-                //                       MaterialPageRoute(
-                //                           builder: (context) =>
-                //                               const WelcomeScreen()));
-                //                 })
-                //         ],
-                //       ),
-                //     ),
-                //   ),
-
-                // ),
               ],
             ),
           ],
