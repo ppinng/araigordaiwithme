@@ -29,6 +29,7 @@ class _ForgotMainState extends State<ForgotMain> {
           builder: (context) {
             return const AlertDialog(
               content: Text("Password reset link sent! Check your email"),
+              backgroundColor: kBoxColor,
             );
           });
     } on FirebaseAuthException catch (e) {

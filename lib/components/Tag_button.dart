@@ -143,71 +143,90 @@ class MyButtonLayout extends HookWidget {
             ),
           ),
         ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(25, 10, 20, 10),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ToggleColorButton(
-                      text: 'Fry',
-                      isPressed: selectedCuisine.value == 'fry',
-                      onPressed: () {
-                        onFoodTypePressed('fry');
-                      }),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  ToggleColorButton(
-                      text: 'Curry',
-                      isPressed: selectedCuisine.value == 'curry',
-                      onPressed: () {
-                        onFoodTypePressed('curry');
-                      }),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  ToggleColorButton(
-                      text: 'Boil',
-                      isPressed: selectedCuisine.value == 'boil',
-                      onPressed: () {
-                        onFoodTypePressed('boil');
-                      }),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  ToggleColorButton(
-                      text: 'Stir',
-                      isPressed: selectedCuisine.value == 'stir',
-                      onPressed: () {
-                        onFoodTypePressed('stir');
-                      }),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  ToggleColorButton(
-                      text: 'Bake',
-                      isPressed: selectedCuisine.value == 'bake',
-                      onPressed: () {
-                        onFoodTypePressed('bake');
-                      }),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  ToggleColorButton(
-                      text: 'Grill ',
-                      isPressed: selectedCuisine.value == 'grill',
-                      onPressed: () {
-                        onFoodTypePressed('grill');
-                      }),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                ]),
+        ClipRect(
+          clipper: HorizontalClipper(22),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(25, 10, 20, 10),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ToggleColorButton(
+                        text: 'Fry',
+                        isPressed: selectedCuisine.value == 'fry',
+                        onPressed: () {
+                          onFoodTypePressed('fry');
+                        }),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    ToggleColorButton(
+                        text: 'Curry',
+                        isPressed: selectedCuisine.value == 'curry',
+                        onPressed: () {
+                          onFoodTypePressed('curry');
+                        }),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    ToggleColorButton(
+                        text: 'Boil',
+                        isPressed: selectedCuisine.value == 'boil',
+                        onPressed: () {
+                          onFoodTypePressed('boil');
+                        }),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    ToggleColorButton(
+                        text: 'Stir',
+                        isPressed: selectedCuisine.value == 'stir',
+                        onPressed: () {
+                          onFoodTypePressed('stir');
+                        }),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    ToggleColorButton(
+                        text: 'Bake',
+                        isPressed: selectedCuisine.value == 'bake',
+                        onPressed: () {
+                          onFoodTypePressed('bake');
+                        }),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    ToggleColorButton(
+                        text: 'Grill ',
+                        isPressed: selectedCuisine.value == 'grill',
+                        onPressed: () {
+                          onFoodTypePressed('grill');
+                        }),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                  ]),
+            ),
           ),
         ),
       ],
     );
+  }
+}
+
+class HorizontalClipper extends CustomClipper<Rect> {
+  final double leftMargin;
+
+  HorizontalClipper(this.leftMargin);
+
+  @override
+  Rect getClip(Size size) {
+    return Rect.fromLTRB(leftMargin, 0, size.width, size.height);
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) {
+    return true;
   }
 }
